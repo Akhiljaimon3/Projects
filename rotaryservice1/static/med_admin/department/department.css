@@ -1,0 +1,477 @@
+:root {
+    /* Core colors */
+    --button-bg: #0346a4;
+    --button-bg-hover: #003366;
+    --gold-bg: #F7A81B;
+
+    /* Text colors */
+    --text-dark: #000;
+    --text-mid: #333;
+    --text-light: #fff;
+    --text-muted: #888;
+
+    /* Backgrounds & borders */
+    --border-color: #ccc;
+    --bg-light: #fafafa;
+    --bg-hover: #fde9c9df;
+
+    /* Font */
+    --font-body: "Inter", "Segoe UI", Roboto, sans-serif;
+
+    /* Font sizes */
+    --font-size-sm: 13px;
+    --font-size-md: 14px;
+    --font-size-lg: 24px;
+}
+
+:root { 
+    --pagination-color: #0346a4;
+    --pagination-bg: #ffffff;
+    --pagination-hover: #003366;
+    --highlight-bg: #F7A81B; /* gold hover for prev/next */
+    --disabled-color: #ccc;
+    --disabled-bg: #f9f9f9;
+}
+
+/* ================= CONTENT BOX ================= */
+.content-box {
+    width: 100%;
+    max-width: 900px;
+    margin: auto;
+    padding: 20px 30px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: var(--text-light);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* ================= HEADINGS ================= */
+.content-box h2,
+.search-header h2 {
+    font-size: var(--font-size-lg);
+    color: var(--button-bg);
+    font-weight: bold;
+    margin: 0;
+    text-align: center;
+}
+
+/* ================= SEARCH HEADER ================= */
+.search-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search-box {
+    flex: 1;
+    max-width: 300px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: var(--font-size-sm);
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+.search-box input:focus,
+.amount:focus {
+    border-color: var(--button-bg);
+    outline: none;
+}
+
+/* ================= FORM ================= */
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.department,
+.form-container select {
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: var(--font-size-sm);
+    box-sizing: border-box;
+    font-family: inherit;
+    transition: border-color 0.3s ease;
+    max-width: 400px;
+}
+
+.department:focus,
+.form-container select:focus {
+    border-color: var(--button-bg);
+    outline: none;
+}
+
+.department{
+    width: 50%;
+}
+
+.form-container button {
+    padding: 10px 20px;
+    font-size: var(--font-size-sm);
+    background-color: var(--button-bg);
+    color: var(--text-light);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.form-container button:hover {
+    background-color: var(--button-bg-hover);
+}
+
+/* ================= DROPDOWN ================= */
+.dropdown-wrapper {
+    position: relative;
+    flex: 3;
+    max-width: 150px;
+    min-width: 100px;
+}
+
+#dropdownInput {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: var(--font-size-sm);
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='2' fill='none' fill-rule='evenodd'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+    cursor: pointer;
+}
+
+.amount {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: var(--font-size-sm);
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+.dropdown-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: var(--text-light);
+    border: 1px solid var(--border-color);
+    border-top: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    max-height: 160px;
+    overflow-y: auto;
+    z-index: 999;
+    display: none;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-radius: 0 0 6px 6px;
+}
+
+.dropdown-results li {
+    padding: 10px 12px;
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+}
+
+.dropdown-results li:hover,
+.dropdown-results li.active {
+    background-color: var(--bg-hover);
+}
+
+/* ================= TABLE ================= */
+#sectors-table,
+#home-table {
+    width: 90%;
+    margin: 20px auto 0 auto;
+    border-collapse: separate; /* important */
+    border-spacing: 0;         /* removes gaps between cells */
+    font-family: var(--font-body);
+    color: var(--text-mid);
+    font-size: var(--font-size-md);
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;          /* makes radius clip cell backgrounds */
+}
+
+#sectors-table th,
+#sectors-table td {
+    padding: 9px;
+    text-align: center;
+    border-top: 1px solid #ddd;
+}
+
+#home-table th,
+#home-table td {
+    padding: 9px;
+    text-align: left;
+    border-top: 1px solid #ddd;
+}
+
+#sectors-table th,
+#home-table th {
+    background-color: var(--button-bg);
+    color: var(--text-light);
+    font-weight: 600;
+    font-size: var(--font-size-md);
+}
+
+#sectors-table tr,
+#home-table tr {
+    border-bottom: 1px solid #ddd;
+}
+
+/* ================= ACTION BUTTONS ================= */
+.edit-btn {
+    color: #0346a4;
+    cursor: pointer;
+    margin-left: auto;
+    font-size: 14px;
+    transition: transform 0.2s ease;
+    background: transparent;
+    border: none;
+    padding: 2px 4px;
+}
+
+.edit-btn:hover {
+    transform: scale(1.2);
+}
+
+.delete-btn {
+    color: #d32f2f; /* red */
+    cursor: pointer;
+    margin-left: 0px;
+    font-size: 14px;
+    transition: transform 0.2s ease;
+    background: transparent;
+    border: none;
+    padding: 2px 4px;
+}
+
+.delete-btn:hover {
+    transform: scale(1.2);
+}
+
+/* Radio button group */
+.type-selection {
+    display: flex;
+    padding: 8px 5px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: var(--font-size-sm);
+    gap: 20px;
+    font-size: var(--font-size-sm);
+}
+
+.type-selection label {
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.type-selection input[type="radio"] {
+    margin-right: 6px;
+    accent-color: var(--button-bg); /* modern browsers */
+}
+
+/* Note styling */
+.note {
+    margin: 0px;
+    font-size: var(--font-size-sm);
+    line-height: 1.5;
+    color: var(--text-mid);
+    background: #fff3f3;
+    border-left: 4px solid #dc3545;
+    padding: 8px 12px;
+    border-radius: 4px;
+}
+
+.note-title {
+    font-weight: bold;
+    color: #dc3545;
+    margin-right: 6px;
+}
+
+.note .common { color: #007bff; font-weight: 500; }
+.note .credit { color: #28a745; font-weight: 500; }
+.note .expense { color: #e67e22; font-weight: 500; }
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.pagination a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 34px;
+    height: 34px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 8px;
+    background: var(--pagination-bg);
+    color: var(--pagination-color);
+    border: 1px solid #ddd;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.pagination a:hover:not(.disabled) {
+    background: var(--pagination-color);
+    color: #fff;
+    border-color: var(--pagination-color);
+    transform: translateY(-2px);
+}
+
+.pagination .active {
+    background: var(--pagination-color);
+    color: white;
+    border-color: var(--pagination-color);
+    box-shadow: 0 3px 8px rgba(0,150,136,0.3);
+}
+
+/* Disabled state */
+.pagination a.disabled {
+    pointer-events: none;
+    background: var(--disabled-bg);
+    color: var(--disabled-color);
+    border-color: #eee;
+    box-shadow: none;
+    cursor: default;
+}
+
+.page-numbers {
+    display: flex;
+    gap: 4px;
+}
+
+@media (max-width: 768px) {
+    .display-area {
+        overflow-x: auto;
+        position: relative; /* Needed for absolute centering */
+    }
+
+    .user-table {
+        min-width: 600px;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;  /* Center horizontally */
+        flex-wrap: wrap;
+        margin-top: 20px;
+        min-width: 100%; /* Ensure it spans the box */
+    }
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+    /* Search header stacked */
+    .search-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .search-box {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Form fields stacked */
+    .form-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .form-container input[type="text"],
+    .form-container select,
+    .form-container button {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+
+    /* Radio buttons stacked */
+    .type-selection {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    /* Table full width */
+    #sectors-table {
+        width: 100%;
+        font-size: 0.875rem;
+        word-break: break-word;
+    }
+
+    /* Pagination wraps */
+    .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 5px;
+        margin-top: 15px;
+    }
+
+    /* Notes smaller font */
+    .note {
+        font-size: 0.85rem;
+    }
+
+    /* Headings smaller */
+    .content-box h2,
+    .search-header h2 {
+        font-size: 1.2rem;
+        text-align: left;
+    }
+
+    .content-box {
+        margin: 0px;
+        padding: 10px 15px;
+    }
+
+    .dropdown-wrapper {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 500px) {
+    /* Further reduce font sizes on very small screens */
+    .content-box h2,
+    .search-header h2 {
+        font-size: 1.1rem;
+    }
+
+    .note {
+        font-size: 0.8rem;
+    }
+
+    .type-selection {
+        gap: 6px;
+    }
+}
+

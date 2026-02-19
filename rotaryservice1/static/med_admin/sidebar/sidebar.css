@@ -1,0 +1,569 @@
+:root {
+    /* Colors */
+    --main-bg: #003366;
+    --accent-gold: #F7A81B;
+    --text-color: #333;
+    --border-color: #ccc;
+
+    /* Fonts */
+    --font-body: "Inter", "Segoe UI", Roboto, sans-serif;
+    --font-size-base: 14px;
+    --font-size-heading: 16px;
+
+    /* Layout */
+    --radius: 6px;
+    --shadow: 0 2px 10px rgba(0,0,0,0.05);
+    --spacing: 20px;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-body);
+    background-color: #F7F7F8;
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+}
+
+/* Top bar */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: white;
+    border: 1px solid #e4e4e4;
+    z-index: 1000;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    padding: 10px;
+    margin-left: 10px;
+    background: var(--sidebar-bg, #002d6d); /* your sidebar blue */
+}
+
+.logo img {
+    height: 40px;
+    width: 180px;           /* keep proportions */
+    background: white;     /* white background behind logo */
+    border-radius: 6px;    /* optional rounded edges */
+    padding: 0px;     /* spacing inside white box */
+    object-fit: contain;   /* keep it sharp */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* optional subtle shadow */
+}
+
+.account-cir-3 {
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    overflow: hidden;
+    position: relative;
+    right: 5%;
+    transition: right 0.3s ease;
+}
+
+.profile-area,
+.display-area {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.profile-area p,
+.display-area p {
+    margin: 5px 0;
+    color: #6b6b6b;
+}
+
+.profile-pic {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
+.sidebar {
+    width: 250px;
+    background: var(--main-bg);
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;          /* ensures it stretches full height */
+    z-index: 1001;
+    transition: transform 0.3s ease, width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    overflow-y: auto;   /* enables vertical scrolling */
+    overflow-x: hidden; /* avoid horizontal scrollbars */
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: rgba(255,255,255,0.4) transparent;
+}
+
+/* Chrome, Edge, Safari */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background-color: rgba(255,255,255,0.3);
+    border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar {
+    display: none;
+}
+
+.sidebar.hidden {
+    transform: translateX(-80%);
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 10px 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    position: relative;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Dashboard and Account Head */
+.sidebar ul li > a {
+    display: flex;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+    font-size: 15.5px;
+    font-weight: 500;
+    padding: 12px 20px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar ul li > a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+
+.sidebar-icon {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    margin-right: 12px;
+    border-radius: 3px;
+    color: white;
+}
+
+/* Sidebar toggle button style */
+.toggle-btn {
+    position: absolute;
+    top: 12px;
+    right: 6px;
+    background-color: transparent;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.toggle-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Main content */
+.main-content {
+    margin-top: 60px;
+    margin-left: 0;
+    padding: 20px 20px 20px 70px;
+    width: 100%;
+    height: calc(100vh - 60px);
+    overflow: auto;
+    box-sizing: border-box;
+    transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+@media (min-width: 800px) {
+    .main-content.sidebar-visible {
+        margin-left: 250px;
+        width: calc(100% - 250px);
+        padding: 20px;
+    }
+
+    .main-content.sidebar-hidden {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+
+@media (min-width: 480px) {
+    .main-content {
+        padding: 15px 15px 15px 60px;
+    }
+}
+
+@media (min-width: 350px) {
+    .main-content {
+        padding: 15px 15px 15px 60px;
+    }
+}
+
+.manage-link {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    font-size: 15.5px;
+    font-weight: 500;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+    position: relative;
+}
+
+.manage-link:hover,
+.manage-link.active {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.toggle-icon {
+    font-size: 18px;
+    width: 20px;
+    margin-right: 12px;
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.arrow-down {
+    margin-left: auto;
+    font-size: 14px;
+    transition: transform 0.3s ease;
+}
+
+/* Dropdown list */
+.manage-dropdown {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+    overflow: hidden;
+    max-height: 0;
+    visibility: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+}
+
+.manage-dropdown.expanded {
+    max-height: 500px;
+    visibility: visible;
+}
+
+.manage-dropdown li a {
+    padding: 10px 32px;
+    font-size: 14.5px;
+    color: white;
+    display: block;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+/* Active child still orange */
+.manage-dropdown li.active > a {
+    background-color: var(--gold-bg);
+    color: #fff;
+}
+
+/* When sidebar is collapsed, also highlight parent manage-link */
+html.sidebar-collapsed .dropdown-manage:has(.manage-dropdown li.active) > .manage-link {
+    background-color: var(--gold-bg);
+    color: #fff;
+}
+
+.manage-dropdown li.active > a {
+    background-color: var(--gold-bg);
+}
+
+.sidebar ul li.single-link.active > a {
+    background-color: var(--gold-bg);
+    color: white;
+}
+
+.manage-dropdown li.active > a:hover,
+.sidebar ul li.single-link.active > a:hover {
+    background-color: var(--gold-bg); /* darker orange to distinguish */
+}
+
+.manage-dropdown li a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.topbar-profile-area {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    cursor: pointer;
+}
+
+.profile-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e4e4e4;
+}
+
+.admin-name-text {
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+    user-select: none;
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: 42px;
+    right: 0;
+    background: #fff;
+    padding: 0;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    z-index: 1100;
+    min-width: 150px;
+    max-width: 200px;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+}
+
+.profile-dropdown-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px 0px;
+    background-color: #fff;
+}
+
+.profile-pic-dropdown {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid #ccc;
+    flex-shrink: 0;
+}
+
+.profile-name-block {
+    margin-left: 12px;
+}
+
+.admin-name-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+    white-space: nowrap;
+}
+
+/* The missing line */
+.profile-dropdown-divider {
+    height: 1px;
+    background-color: #e4e4e4;
+    margin: 0;
+    width: 100%;
+}
+
+/* Action links */
+.profile-dropdown a {
+    text-decoration: none;
+    color: var(--main-bg);
+    font-size: 14px;
+    padding: 10px 16px;
+    transition: background-color 0.2s ease;
+}
+
+.profile-dropdown a:hover {
+    background-color: #fde9c9df;
+    text-decoration: none;
+}
+
+.profile-dropdown.collapsed {
+    display: none;
+}
+
+.manage-dropdown li a::before {
+    content: "•";
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.5); /* Faded white */
+    margin-right: 10px;
+    display: inline-block;
+    width: 10px;
+}
+
+.sidebar.hidden ul li a .link-text,
+.sidebar.hidden ul li a .arrow-down {
+    display: none;
+}
+
+.sidebar.hidden .manage-dropdown li a {
+    color: transparent !important; /* Hide text */
+    position: relative;
+    padding: 10px 0;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    overflow: visible; /* Ensure pseudo-element is visible */
+}
+
+.sidebar.hidden .manage-dropdown li a::before {
+    display: none !important;
+}
+
+.sidebar.hidden .sidebar-icon {
+    margin-left: auto;
+    margin-right: auto; /* Optional: Center it horizontally if needed */
+    text-align: right;
+    display: block;
+    width: 100%;
+    padding-right: 16.5px;
+}
+
+.sidebar.hidden ul li a{
+    padding-right: 0px;
+}
+
+.sidebar {
+    transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
+    overflow: hidden;
+}
+
+.main-content {
+    transition: margin-left 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.sidebar {
+    /* Remove transition on initial load */
+    transition: none;
+}
+
+html.sidebar-collapsed .sidebar {
+    transform: translateX(-80%);
+}
+
+.sidebar.prepare-transition {
+    transition: none !important; /* Prevent transition before DOM ready */
+}
+
+.sidebar {
+    /* Remove transition on initial load */
+    transition: none;
+}
+
+html.sidebar-collapsed .sidebar {
+    transform: translateX(-80%);
+}
+
+.sidebar {
+    transition: transform 0.3s ease, width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    overflow-y: auto;   /* allow vertical scrolling */
+    overflow-x: hidden; /* prevent horizontal scrollbar */
+    scrollbar-width: none;
+    -ms-overflow-style: none; /* IE/Edge */
+}
+
+
+.sidebar.prepare-transition {
+    transition: none !important;
+}
+
+html.sidebar-collapsed .sidebar {
+    transform: translateX(-80%);
+}
+
+.arrow-down {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.dropdown-manage.open .arrow-down {
+  transform: rotate(180deg);
+}
+
+.flyout-outside {
+    position: absolute;
+    background-color: var(--main-bg);
+    min-width: 180px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    max-height: none !important;
+    overflow: visible !important;
+    z-index: 2000;
+    display: block !important;
+}
+
+.flyout-outside li a {
+    color: white !important;
+    height: auto !important;
+    padding: 10px 16px !important;
+    display: block !important;
+}
+
+/* =========================
+   NEW ADDITION FOR SIDEBAR HIDDEN
+   ========================= */
+
+/* Collapsed sidebar */
+.sidebar.sidebar-collapsed {
+    width: 70px;
+    overflow: visible;
+}
+
+.sidebar.sidebar-collapsed .sidebar-text,
+.sidebar.sidebar-collapsed .sidebar-logo-img,
+.sidebar.sidebar-collapsed .btn-upgrade-pro span:not(.sidebar-icon) {
+    display: none;
+}
+
+.sidebar.sidebar-collapsed .nav-link {
+    justify-content: center;
+}
+
+.sidebar .multi-level {
+    transition: max-height 0.3s ease;
+    overflow: hidden;
+}
+
+.flyout-outside {
+    position: absolute;
+    z-index: 9999;
+    background: #343a40;
+    color: #fff;
+    border-radius: 0.25rem;
+    min-width: 180px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+

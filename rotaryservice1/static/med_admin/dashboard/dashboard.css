@@ -1,0 +1,66 @@
+
+    .card-custom h5 {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    .battery-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+    .battery {
+      position: relative;
+      flex: 1;
+      height: 20px;
+      background: #e0e0e0;
+      border-radius: 4px;
+      margin: 0 10px;
+      overflow: hidden;
+    }
+    .battery-fill {
+      height: 100%;
+      background: #28a745;
+      width: 0%;
+      transition: width 0.6s ease-in-out;
+    }
+    .battery::after {
+      content: "";
+      position: absolute;
+      top: 4px;
+      right: -8px;
+      width: 6px;
+      height: 12px;
+      background: #aaa;
+      border-radius: 2px;
+    }
+    .count-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #000;
+    }
+
+    .bg-blue    { background: #a6bdd2; }  /* your preferred blue */
+    .bg-gold    { background: #b8a383; }  /* your preferred gold */
+    .bg-green   { background: #fafafa; }  /* your preferred green */
+    .bg-orange  { background: #E5C80A; }  /* complementary */
+    .bg-pista   { background: #b0e9eb; }  /* your preferred pista */
+    .bg-purple  { background: #F8F7A7; }  /* complementary */
+    .bg-red     { background: #eea5d1; }  /* complementary */
+
+    .card-custom {
+        border: 1px solid #ccc;
+        border-radius: 12px;
+        padding: 17px;
+        color: #000;
+    }
+
+    .top-bar{
+        height: 60px;
+    }
+
+    #deptChart,
+    #donutChart {
+    width: 100% !important;
+    height: 250px !important; /* or whatever height you want */
+}

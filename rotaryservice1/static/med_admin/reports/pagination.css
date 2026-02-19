@@ -1,0 +1,167 @@
+:root { 
+    --pagination-color: #0346a4;
+    --pagination-bg: #ffffff;
+    --pagination-hover: #003366;
+    --highlight-bg: #F7A81B; /* gold hover for prev/next */
+    --disabled-color: #ccc;
+    --disabled-bg: #f9f9f9;
+}
+
+/* Apply your custom style to DataTables pagination */
+.dataTables_wrapper .dataTables_paginate {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-top: 5px;
+    flex-wrap: wrap;
+}
+
+.dataTables_wrapper .dataTables_paginate a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 34px;
+    height: 34px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 8px;
+    background: var(--pagination-bg);
+    color: var(--pagination-color);
+    border: 1px solid #ddd;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.dataTables_wrapper .dataTables_paginate a:hover:not(.disabled) {
+    background: var(--pagination-color);
+    color: #fff;
+    border-color: var(--pagination-color);
+    transform: translateY(-2px);
+}
+
+/* Force DataTables current page button to white text */
+div.dataTables_wrapper div.dataTables_paginate a.paginate_button.current,
+div.dataTables_wrapper div.dataTables_paginate a.paginate_button.current:hover {
+    background: var(--pagination-color) !important;
+    color: #fff !important;   /* finally forces white */
+    border-color: var(--pagination-color) !important;
+}
+
+/* --- Show Entries Dropdown --- */
+.dataTables_wrapper .dataTables_length {
+    margin-bottom: 10px;   /* small spacing under dropdown */
+    color: #333;           /* label text color */
+}
+
+.dataTables_wrapper .dataTables_length label {
+    display: flex;         /* align label and dropdown side by side */
+    align-items: center;
+    gap: 8px;              /* spacing between text and dropdown */
+}
+
+.dataTables_wrapper .dataTables_length select {
+    padding: 6px 10px;     /* padding inside dropdown */
+    border: 1px solid #ccc;
+    border-radius: 6px;    /* rounded corners */
+    background: #fff;      /* white background */
+    cursor: pointer;
+    transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dataTables_wrapper .dataTables_length select:focus {
+    outline: none;                                /* remove default outline */
+    border-color: var(--pagination-color);        /* custom border on focus */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.pagination a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 34px;
+    height: 34px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 8px;
+    background: var(--pagination-bg);
+    color: var(--pagination-color);
+    border: 1px solid #ddd;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.pagination a:hover:not(.disabled) {
+    background: var(--pagination-color);
+    color: #fff;
+    border-color: var(--pagination-color);
+    transform: translateY(-2px);
+}
+
+.pagination .active {
+    background: var(--pagination-color);
+    color: white;
+    border-color: var(--pagination-color);
+    box-shadow: 0 3px 8px rgba(0,150,136,0.3);
+}
+
+/* Disabled state */
+.pagination a.disabled {
+    pointer-events: none;
+    background: var(--disabled-bg);
+    color: var(--disabled-color);
+    border-color: #eee;
+    box-shadow: none;
+    cursor: default;
+}
+
+.page-numbers {
+    display: flex;
+    gap: 4px;
+}
+
+@media (max-width: 768px) {
+    .display-area {
+        overflow-x: auto;
+        position: relative; /* Needed for absolute centering */
+    }
+
+    .user-table {
+        min-width: 600px;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;  /* Center horizontally */
+        flex-wrap: wrap;
+        margin-top: 20px;
+        min-width: 100%; /* Ensure it spans the box */
+    }
+}
+
+
