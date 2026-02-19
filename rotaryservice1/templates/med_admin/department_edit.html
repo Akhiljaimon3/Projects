@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPARSHAM 2025 - Admin Dashboard</title>
+
+    <!-- CSS -->
+    <link href="{% static 'med_admin/sidebar/sidebar.css' %}" rel="stylesheet">
+    <link href="{% static 'med_admin/department/department.css' %}" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    
+    {% if request.session.type == 'admin' %}
+        {% include 'med_admin/sidebar.html' %}
+    {% else %}
+        {% include 'med_admin/sidebar_viewonly.html' %}
+    {% endif %}
+       
+    <div class="main-content sidebar-visible">
+        <div class="content-box">
+            <div class="search-header">
+                <h2><i class="fa-solid fa-building"></i> Department</h2>
+            </div>            
+            <form class="form-container" action="{% url 'editdepartment' %}" method="post" id="addsubcategory-form">
+                
+                <input type="hidden" name="department_id" value="{{ edit_department.id }}">
+                {% csrf_token %}
+                <input type="text" id="fixedcredit" class="department" value="{{ edit_department.department }}" name="department" placeholder="Department" required>
+
+                <div class="dropdown-wrapper">
+                    <input type="text" id="amount" class="amount" name="token" value="{{ edit_department.token }}" placeholder="Token" required>
+                </div>
+
+                <div class="dropdown-wrapper">
+                    <input type="number" class="amount" name="limit" value="{{ edit_department.setlimit }}" min="1" step="1" placeholder="Total Limit" required>
+                </div>
+                
+                <div class="dropdown-wrapper">
+                    <input type="number" name="asha_limit" class="amount" value="{{ edit_department.asha_limit }}" min="1" step="1" placeholder="ASHA Workers Limit" required>
+                </div>
+
+                <button type="submit">Update</button>
+            </form>
+            
+            <!-- Table to display specialisation -->
+            <table id="sectors-table">
+                <thead>
+                    <tr>
+                        <th>Department</th>
+                        <th>Total Limit</th>
+                        <th>Rotarians Limit</th>
+                        <th>ASHA Workers Limit</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dpt in departments %}
+                        <tr>
+                            <td>{{ dpt.department }}</td>
+                            <td>{{ dpt.setlimit }}</td>
+                            <td>{{ dpt.rotary_limit }}</td>
+                            <td>{{ dpt.asha_limit }}</td>
+                            <td>
+                                <form action="{% url 'editdepartment' %}" method="get" style="display:inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="department_id" value="{{ dpt.id }}">
+                                    <button type="submit" class="edit-btn" title="edit">
+                                        <i class="fa fa-pencil"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}     
+                </tbody>
+            </table>
+
+            {% with query_param=request.GET.name|default_if_none:'' %}
+            <div class="pagination">
+                <a href="?page=1{% if query_param %}&name={{ query_param }}{% endif %}"
+                class="pagination-btn {% if not departments.has_previous %}disabled{% endif %}"
+                {% if not departments.has_previous %}tabindex="-1"{% endif %}>
+                First
+                </a>
+
+                <a href="?page={% if departments.has_previous %}{{ departments.previous_page_number }}{% else %}1{% endif %}{% if query_param %}&name={{ query_param }}{% endif %}"
+                class="pagination-btn {% if not departments.has_previous %}disabled{% endif %}"
+                {% if not departments.has_previous %}tabindex="-1"{% endif %}>
+                <i class="fas fa-chevron-left"></i>
+                </a>
+
+                {% for page_num in page_range_custom %}
+                    <a href="?page={{ page_num }}{% if query_param %}&name={{ query_param }}{% endif %}"
+                    class="pagination-square {% if page_num == departments.number %}active{% endif %}">
+                        {{ page_num }}
+                    </a>
+                {% endfor %}
+
+                <a href="?page={% if departments.has_next %}{{ departments.next_page_number }}{% else %}{{ departments.paginator.num_pages }}{% endif %}{% if query_param %}&name={{ query_param }}{% endif %}"
+                class="pagination-btn {% if not departments.has_next %}disabled{% endif %}"
+                {% if not departments.has_next %}tabindex="-1"{% endif %}>
+                <i class="fas fa-chevron-right"></i>
+                </a>
+
+                <a href="?page={{ departments.paginator.num_pages }}{% if query_param %}&name={{ query_param }}{% endif %}"
+                class="pagination-btn {% if not departments.has_next %}disabled{% endif %}"
+                {% if not departments.has_next %}tabindex="-1"{% endif %}>
+                Last
+                </a>
+            </div>
+            {% endwith %}
+
+        </div>
+    </div>
+
+    {{ categories|json_script:"category-data" }}
+
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <script>
+        const notyf = new Notyf({
+        duration: 1500,
+        position: { x: 'right', y: 'bottom' },
+        ripple: true
+    });
+
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'error' %}
+                    notyf.error("{{ message|escapejs }}");
+                {% else %}
+                    notyf.success("{{ message|escapejs }}");
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </script>
+
+    <script src="{% static 'med_admin/sidebar/sidebar.js' %}"></script>
+    <!-- <script src="{% static 'med_admin/department/department.js' %}"></script> -->
+</body>
+</html>

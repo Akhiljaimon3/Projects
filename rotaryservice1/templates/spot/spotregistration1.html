@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rotary Santhwana Sparsham 2025</title>
+<style>
+/* Keep the same styling as before */
+body { font-family:"Segoe UI", Roboto, Arial, sans-serif; margin:0; padding:0; background:#f4f6f9; display:flex; justify-content:center; align-items:center; min-height:100vh; }
+.container { background:#fff; width:95%; max-width:420px; padding:32px 28px; border-radius:12px; box-shadow:0 6px 20px rgba(0,0,0,0.15); text-align:center; border-top:6px solid #003865; display:flex; flex-direction:column; justify-content:space-between; min-height:500px; }
+.form-header h1 { color:#003865; font-size:22px; font-weight:700; margin-bottom:6px; text-transform:uppercase; }
+.form-header h2 { color:#f7a81b; font-size:16px; font-weight:600; margin-top:0; margin-bottom:16px; }
+.code-box { 
+    text-align:center; 
+    margin:6px 0 16px 0;  /* top 6px, bottom 16px */
+}
+
+.code-label { font-size:14px; font-weight:600; color:#003865; margin-bottom:6px; display:block; }
+.digit-input { width:50px; height:54px; font-size:24px; text-align:center; margin:0 6px; border:1.5px solid #ccd6e0; border-radius:6px; transition:all 0.3s ease; }
+.digit-input:focus { border-color:#003865; outline:none; box-shadow:0 0 6px rgba(0,56,101,0.25); }
+button { width:100%; padding:14px; background:#f7a81b; color:#003865; border:none; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer; transition:all 0.3s ease; }
+button:disabled { background:#dcdcdc; color:#7a7a7a; cursor:not-allowed; }
+button:hover:not(:disabled) { background:#ffbb33; transform:translateY(-2px); box-shadow:0 5px 12px rgba(0,0,0,0.15); }
+.error-message { color:#f00; font-weight:500; margin-top:12px; text-align:center; }
+.logo { width:300px; margin:20px auto 0 auto; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="form-header">
+    <h1>Rotary Santhwana Sparsham 2025</h1>
+    <h2>Free Mega Medical Camp</h2>
+    
+  </div>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="error-message">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post">
+    <h3>SPOT REGISTRATION</h3>
+    {% csrf_token %}
+    <div class="code-box">
+      <span class="code-label">Enter 4-digit code</span>
+      <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="digit-input">
+    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="digit-input">
+    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="digit-input">
+    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="digit-input">
+    </div>
+    <input type="hidden" name="code" id="hiddenCode">
+    <button type="submit" id="goBtn" disabled>GO</button>
+  </form>
+
+  <img src="{% static 'images/combined.png' %}" alt="Rotary Club Logo" class="logo">
+</div>
+
+<script>
+const inputs = document.querySelectorAll('.digit-input');
+const goBtn = document.getElementById('goBtn');
+const hiddenCode = document.getElementById('hiddenCode');
+
+inputs.forEach((input, index) => {
+  input.addEventListener('input', () => {
+    input.value = input.value.replace(/[^0-9]/g,'');
+    if(input.value && index < inputs.length-1) inputs[index+1].focus();
+    hiddenCode.value = Array.from(inputs).map(i => i.value).join('');
+    goBtn.disabled = hiddenCode.value.length !== 4;
+  });
+
+  input.addEventListener('keydown', (e) => {
+    if(e.key === "Backspace" && !input.value && index > 0) inputs[index-1].focus();
+  });
+});
+</script>
+</body>
+</html>

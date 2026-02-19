@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPARSHAM 2025 - Admin Dashboard</title>
+
+    <!-- CSS -->
+    <link href="{% static 'med_admin/sidebar/sidebar.css' %}" rel="stylesheet">
+    <link href="{% static 'med_admin/department/department.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+    /* All table body cells left aligned by default */
+    #home-table tbody td {
+        text-align: left;
+        padding: 9px;
+        border-top: 1px solid #ddd;
+    }
+
+    /* Table header styling */
+    #home-table th {
+        padding: 9px;
+        border-top: 1px solid #ddd;
+        text-align: left; /* default for headers */
+    }
+
+    /* Center only the Action column */
+    #home-table th.center,
+    #home-table td.center {
+        text-align: center;
+    }
+
+    /* Button styling */
+    .action-btn {
+        padding: 6px 12px;
+        margin: 0 3px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        background-color: #0346a4;
+        color: white;
+    }
+    
+    .training-links{
+        width: 90%;
+        margin: 20px auto 0 auto;
+        color: #0346a4;
+    }
+
+        /* Left-align all table body cells */
+    #home-table tbody td {
+        text-align: left;
+        padding: 9px;
+        border-top: 1px solid #ddd;
+    }
+
+    /* Table headers left aligned except Action */
+    #home-table th {
+        padding: 9px;
+        border-top: 1px solid #ddd;
+        text-align: left;
+    }
+
+    /* Center Action column */
+    #home-table th.center,
+    #home-table td.center {
+        text-align: center;
+    }
+
+    /* Button styling */
+    .action-btn {
+        padding: 6px 12px;
+        margin: 0 3px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        background-color: #0346a4;
+        color: white;
+    }
+</style>
+</head>
+<body>
+    
+    {% if request.session.type == 'admin' %}
+        {% include 'med_admin/sidebar.html' %}
+    {% else %}
+        {% include 'med_admin/sidebar_viewonly.html' %}
+    {% endif %}
+       
+    <div class="main-content sidebar-visible">
+        <div class="content-box">
+            <div class="search-header">
+                <h2><i class="fa-solid fa-link"></i> Home</h2>
+            </div>            
+            
+            <table id="home-table">
+                <thead>
+                    <tr>
+                        <th>SL</th>
+                        <th>Name</th>
+                        <th>Link</th>
+                        <th class="center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Registration</td>
+                        <td>https://medicalcamp.rotarykodungallur.org</td>
+                        <td class="center">
+                            <button class="action-btn copy-btn" data-link="https://medicalcamp.rotarykodungallur.org">Copy</button>
+                            <button class="action-btn go-btn" data-link="https://medicalcamp.rotarykodungallur.org">Go</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Confirmation</td>
+                        <td>https://medicalcamp.rotarykodungallur.org/confirmlogin</td>
+                        <td class="center">
+                            <button class="action-btn copy-btn" data-link="https://medicalcamp.rotarykodungallur.org/confirmlogin">Copy</button>
+                            <button class="action-btn go-btn" data-link="https://medicalcamp.rotarykodungallur.org/confirmlogin">Go</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Admin / View Only User</td>
+                        <td>https://medicalcamp.rotarykodungallur.org/admin1/login</td>
+                        <td class="center">
+                            <button class="action-btn copy-btn" data-link="https://medicalcamp.rotarykodungallur.org/admin1/login">Copy</button>
+                            <button class="action-btn go-btn" data-link="https://medicalcamp.rotarykodungallur.org/admin1/login">Go</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Spot Registration</td>
+                        <td>https://medicalcamp.rotarykodungallur.org/spotregistration1</td>
+                        <td class="center">
+                            <button class="action-btn copy-btn" data-link="https://medicalcamp.rotarykodungallur.org/spotregistration1">Copy</button>
+                            <button class="action-btn go-btn" data-link="https://medicalcamp.rotarykodungallur.org/spotregistration1">Go</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="training-links">
+                <h3>Training Links</h3>
+            </div>
+
+            <table id="home-table">
+                <thead>
+                    <tr>
+                        <th>SL</th>
+                        <th>Name</th>
+                        <th>Link</th>
+                        <th class="center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Registration</td>
+                        <td>https://members.rotarykodungallur.org/registration1</td>
+                        <td class="center">
+                            <button class="action-btn copy-btn" data-link="https://members.rotarykodungallur.org/registration1">Copy</button>
+                            <button class="action-btn go-btn" data-link="https://members.rotarykodungallur.org/registration1">Go</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Confirmation</td>
+                        <td>https://members.rotarykodungallur.org/confirmlogin</td>
+                        <td class="center">
+                            <button class="action-btn copy-btn" data-link="https://members.rotarykodungallur.org/confirmlogin">Copy</button>
+                            <button class="action-btn go-btn" data-link="https://members.rotarykodungallur.org/confirmlogin">Go</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Admin / View Only User</td>
+                        <td>https://members.rotarykodungallur.org/admin1/login</td>
+                        <td class="center">
+                            <button class="action-btn copy-btn" data-link="https://members.rotarykodungallur.org/admin1/login">Copy</button>
+                            <button class="action-btn go-btn" data-link="https://members.rotarykodungallur.org/admin1/login">Go</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Spot Registration</td>
+                        <td>https://members.rotarykodungallur.org/spotregistration1</td>
+                        <td class="center">
+                            <button class="action-btn copy-btn" data-link="https://members.rotarykodungallur.org/spotregistration1">Copy</button>
+                            <button class="action-btn go-btn" data-link="https://members.rotarykodungallur.org/spotregistration1">Go</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const notyf = new Notyf({
+                duration: 2500,
+                position: { x: 'right', y: 'bottom' },
+            });
+
+            // Go button: open link in new tab
+            $('.go-btn').click(function() {
+                const link = $(this).data('link');
+                window.open(link, '_blank');
+            });
+
+            // Copy button: copy link to clipboard
+            $('.copy-btn').click(function() {
+                const link = $(this).data('link');
+                navigator.clipboard.writeText(link)
+                    .then(() => {
+                        notyf.open({ type: 'success', message: 'URL copied to clipboard!'});
+                    })
+                    .catch(() => {
+                        notyf.open({ type: 'error', message: 'Failed to copy URL.' });
+                    });
+            });
+        });
+    </script>
+
+    <script src="{% static 'med_admin/sidebar/sidebar.js' %}"></script>
+</body>
+</html>

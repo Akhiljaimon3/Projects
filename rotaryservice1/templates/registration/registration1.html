@@ -1,0 +1,278 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rotary Santhwana Sparsham 2025</title>
+<style>
+  body {
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f4f6f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .container {
+    background: #ffffff;
+    width: 95%;
+    max-width: 420px;
+    padding: 32px 28px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    border-top: 6px solid #003865;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 500px;
+    position: relative;
+  }
+
+  .form-header h1 {
+    color: #003865;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+
+  .form-header h2 {
+    color: #f7a81b;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+
+  .option {
+    margin: 18px 0;
+    text-align: left;
+  }
+
+  label {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    color: #003865;
+    font-weight: 500;
+  }
+
+  input[type="radio"] {
+    transform: scale(1.2);
+    accent-color: #f7a81b;
+    cursor: pointer;
+  }
+
+  .code-box {
+    display: none;
+    margin-top: 12px;
+    text-align: center;
+  }
+
+  .digit-input {
+    width: 48px;
+    height: 54px;
+    font-size: 20px;
+    text-align: center;
+    margin: 0 5px;
+    border: 1.5px solid #ccd6e0;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+  }
+
+  .digit-input:focus {
+    border-color: #003865;
+    outline: none;
+    box-shadow: 0 0 6px rgba(0, 56, 101, 0.25);
+  }
+
+  button {
+    width: 100%;
+    padding: 14px;
+    background: #f7a81b;
+    color: #003865;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 22px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  button:disabled {
+    background: #dcdcdc;
+    color: #7a7a7a;
+    cursor: not-allowed;
+  }
+
+  button:hover:not(:disabled) {
+    background: #ffbb33;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
+  }
+
+
+
+  .error-message {
+    color: #f00;
+    font-weight: 500;
+    margin-top: 12px;
+    text-align: center;
+  }
+
+  @media (max-width: 420px) {
+    .container {
+      width: 90%;
+      padding: 24px 16px;
+      border-radius: 12px;
+      min-height: auto;
+    }
+
+    .digit-input {
+      width: 40px;
+      height: 48px;
+      margin: 0 3px;
+      font-size: 18px;
+    }
+
+    .logo {
+      width: 290px;
+      margin: 8px auto 0 auto;
+    }
+
+    .form-header h1 {
+      font-size: 20px;
+    }
+
+    .form-header h2 {
+      font-size: 15px;
+    }
+  }
+  .footer {
+  margin-top: 6px;
+  font-size: 11px;
+  color: #888;
+  text-align: center;
+  font-weight: 500;
+}
+.footer strong {
+  color: #000;
+}
+
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="form-header">
+    <h1>Rotary Santhwana Sparsham 2025</h1>
+    <h2>Free Mega Medical Camp</h2>
+  </div>
+
+  {% if error %}
+    <div class="error-message">{{ error }}</div>
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+
+    <!-- ASHA Worker -->
+    <div class="option">
+      <label>
+        <input type="radio" name="usertype" value="asha"> ASHA Worker Login
+      </label>
+      <div class="code-box" id="ashaCodeBox">
+        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="digit-input">
+    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="digit-input">
+    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="digit-input">
+    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="digit-input">
+      </div>
+    </div>
+
+    <!-- Official User -->
+    <div class="option">
+      <label>
+        <input type="radio" name="usertype" value="official"> Rotarian Login
+      </label>
+      <div class="code-box" id="officialCodeBox">
+        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="digit-input">
+    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="digit-input">
+    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="digit-input">
+    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="digit-input">
+      </div>
+    </div>
+
+    <input type="hidden" name="code" id="hiddenCode">
+    <button type="submit" id="goBtn" disabled>GO</button>
+  </form>
+
+  <img src="{% static 'images/combined.png' %}" alt="Rotary Club Logo" class="logo">
+  <footer class="footer">
+  Powered by <strong>Cluster Innovation Hub Pvt Ltd</strong>
+</footer>
+</div>
+
+<script>
+const radios = document.querySelectorAll('input[name="usertype"]');
+const goBtn = document.getElementById('goBtn');
+const hiddenCode = document.getElementById('hiddenCode');
+
+// Separate code boxes
+const ashaBox = document.getElementById('ashaCodeBox');
+const officialBox = document.getElementById('officialCodeBox');
+
+function resetBoxes() {
+  [ashaBox, officialBox].forEach(box => {
+    box.style.display = "none";
+    box.querySelectorAll('.digit-input').forEach(i => i.value = '');
+  });
+}
+
+// Show/hide appropriate code box
+radios.forEach(radio => {
+  radio.addEventListener('change', () => {
+    resetBoxes();
+    goBtn.disabled = true;
+
+    if (radio.value === "asha") {
+      ashaBox.style.display = "block";
+      ashaBox.querySelectorAll('.digit-input')[0].focus();
+    } else if (radio.value === "official") {
+      officialBox.style.display = "block";
+      officialBox.querySelectorAll('.digit-input')[0].focus();
+    }
+  });
+});
+
+// Handle digit inputs for both boxes
+document.querySelectorAll('.code-box').forEach(box => {
+  const inputs = box.querySelectorAll('.digit-input');
+
+  inputs.forEach((input, index) => {
+    input.addEventListener('input', () => {
+      input.value = input.value.replace(/[^0-9]/g, '');
+      if (input.value && index < inputs.length - 1) inputs[index + 1].focus();
+
+      const activeBox = [...document.querySelectorAll('.code-box')].find(b => b.style.display === 'block');
+      const allFilled = Array.from(activeBox.querySelectorAll('.digit-input')).every(i => i.value !== "");
+      goBtn.disabled = !allFilled;
+      hiddenCode.value = Array.from(activeBox.querySelectorAll('.digit-input')).map(i => i.value).join('');
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === "Backspace" && !input.value && index > 0) inputs[index - 1].focus();
+    });
+  });
+});
+</script>
+</body>
+</html>

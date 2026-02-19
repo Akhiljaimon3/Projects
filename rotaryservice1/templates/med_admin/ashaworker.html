@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPARSHAM 2025 - Admin Dashboard</title>
+
+    <link href="{% static 'med_admin/sidebar/sidebar.css' %}" rel="stylesheet">
+    <link href="{% static 'med_admin/ashaworker/ashaworker.css' %}" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    {% if request.session.type == 'admin' %}
+        {% include 'med_admin/sidebar.html' %}
+    {% else %}
+        {% include 'med_admin/sidebar_viewonly.html' %}
+    {% endif %}
+    
+    <div class="main-content sidebar-visible">
+        <div class="display-box">
+            <div class="form-box">
+                <!-- Top button for Registration Desk -->
+<div id="top-actions" class="text-end mb-3" style="">
+    <a href="{% url 'all_volunteers' %}" class="submit-btn" id="all-volunteers-btn">View All Volunteers</a>
+</div>
+
+                <form action="{% url 'ashaworkers' %}" method="post" id="add-user-form">
+                    {% csrf_token %}
+                    <h2 class="form-heading">Users</h2>
+
+                    <div class="form-group-row">
+                        <div class="form-group">
+                            <label for="fullname">Name</label>
+                            <input type="text" id="fullname" name="name" placeholder="Enter full name" required pattern="^[A-Za-z ]+$">
+                        </div>
+                    </div>
+
+                    <div class="form-group-row">
+                        <div class="form-group">
+                            <label for="phone">Contact</label>
+                            <input type="text" id="phone" name="phone" placeholder="Enter phone number" required pattern="^[0-9]{10}$">
+                        </div>
+                    </div>
+
+                    <!-- Role selection -->
+                    <label class="role-title">Role</label>
+                    <div class="role-section">
+                        <div class="role-options">
+                            <label class="role-option">
+                            <input type="radio" name="role" value="ashaworker" required>
+                            <span>ASHA worker</span>
+                            </label>
+
+                            <label class="role-option">
+                            <input type="radio" name="role" value="registration">
+                            <span>Registration Desk</span>
+                            </label>
+
+                            <label class="role-option">
+                            <input type="radio" name="role" value="followup">
+                            <span>Follow Up</span>
+                            </label>
+                        </div>
+
+                        <!-- Conditional dropdowns -->
+                        <div id="extra-dropdown-container"></div>
+                    </div>
+
+                    <div class="submit-row">
+                        <button class="submit-btn" id="save-btn" type="submit">Save</button>
+                    </div>
+                </form>
+
+                <div class="upload-link-container">
+                    <a href="#" id="toggle-upload">📤 Upload ASHA Workers (Excel)</a>
+                </div>
+
+                <div class="upload-box" id="upload-box">
+                    <form method="post" enctype="multipart/form-data" action="{% url 'upload_ashaworkers' %}">
+                        {% csrf_token %}
+                        <div class="upload-row">
+                            <input type="file" name="excel_file" accept=".xlsx,.xls" required>
+                            <button type="submit" name="excel_upload" class="submit-btn small">Upload</button>
+                        </div>
+                        <p class="info-text">File must contain columns in the following order: <b>name</b>, <b>contact</b>, <b>ward</b></p>
+                    </form>
+                </div>
+                
+                <div id="extra-dropdown-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.djangoMessages = [
+            {% for message in messages %}
+                { text: "{{ message|escapejs }}", tags: "{{ message.tags }}" },
+            {% endfor %}
+        ];
+
+        window.departmentOptions = [
+            {% for dept in departments %}
+                { id: "{{ dept.id }}", name: "{{ dept.department }}" },
+            {% endfor %}
+        ];
+    </script>
+
+    <script src="{% static 'med_admin/sidebar/sidebar.js' %}"></script>
+    <script src="{% static 'med_admin/ashaworker/ashaworker.js' %}"></script>
+</body>
+</html>

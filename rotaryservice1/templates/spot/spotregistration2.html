@@ -1,0 +1,281 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPARSHAM - Patient Details</title>
+<style>
+body {
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    margin:0; padding:0;
+    background:#f4f6f9;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+.container {
+    background:#fff;
+    width:95%;
+    max-width:420px;
+    padding:32px 28px;
+    border-radius:12px;
+    box-shadow:0 6px 20px rgba(0,0,0,0.15);
+    text-align:center;
+    border-top:6px solid #003865;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    min-height:580px;
+}
+.form-header h1 {
+    color:#003865;
+    font-size:22px;
+    font-weight:700;
+    margin-bottom:12px;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+    line-height:1.4;
+}
+.form-header .sparsham { color:#f7a81b; }
+h2 { color:#003865; font-size:18px; font-weight:600; margin-bottom:16px; }
+input, select {
+    width:100%;
+    padding:12px;
+    font-size:16px;
+    border:1.5px solid #ccd6e0;
+    border-radius:8px;
+    margin-top:10px;
+    text-align:left;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+input:focus, select:focus { border-color:#003865; outline:none; box-shadow:0 0 6px rgba(0,56,101,0.25); }
+input.error { border-color:red; }
+button {
+    width:100%;
+    padding:14px;
+    background:#f7a81b;
+    color:#003865;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+    font-weight:bold;
+    margin-top:22px;
+    cursor:pointer;
+    transition:all 0.3s ease;
+}
+button:disabled { background:#dcdcdc; color:#7a7a7a; cursor:not-allowed; }
+button:hover:not(:disabled) { background:#ffbb33; transform:translateY(-2px); box-shadow:0 5px 12px rgba(0,0,0,0.15); }
+.logo { width: 290px; margin: 8px auto 0 auto; }
+.error-msg { color:red; margin-bottom:10px; }
+.contact-error { color:red; font-size:13px; text-align:left; margin-top:5px; display:none; }
+.checkbox-container { display:flex; align-items:center; justify-content:flex-start; margin:10px auto 0 auto; font-size:14px; width:100%; }
+.checkbox-container input { width:auto; margin-right:6px; }
+.footer {
+  margin-top: 6px;
+  font-size: 11px;
+  color: #888;
+  text-align: center;
+  font-weight: 500;
+}
+.footer strong { color: #000; }
+.asha-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2px;
+  }
+  .asha-name {
+    font-weight: 700;
+    color: #003865;
+    font-size: 16px;
+    text-align: left;
+  }
+  .form-header h2 {
+    color: #f7a81b;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+  .view-btn {
+    background: #003865;
+    color: #fff;
+    padding: 6px 10px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+ 
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="asha-header">
+
+      <div class="asha-name">Welcome, {{ display_name }}</div>
+       <a href="{% url 'patients_list' %}" class="view-btn">View Patients</a>
+
+  </div>
+    <div class="form-header">
+    <h1>Rotary Santhwana Sparsham 2025</h1>
+    <h2>Free Mega Medical Camp</h2>
+  </div>
+
+    <h2 style="margin: 5px;">Patient Details</h2>
+
+   {% if alert_message %}
+<script>
+    alert("{{ alert_message|escapejs }}");
+</script>
+{% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <!-- Contact -->
+        <input type="text" id="patientContact" name="contact" placeholder="Enter Contact Number" maxlength="10" required>
+        <div id="contactError" class="contact-error">Enter a valid contact number.</div>
+
+        <!-- Name -->
+        <input type="text" id="patientName" name="name" placeholder="Enter Patient Name" required>
+
+        <!-- Age below 1 checkbox -->
+        <div class="checkbox-container">
+            <input type="checkbox" id="ageBelow1" name="ageBelow1">
+            <label for="ageBelow1">Tick if the patient is below 1 year old</label>
+        </div>
+
+        <!-- Age -->
+        <input type="number" id="patientAge" name="age" placeholder="Enter Age" min="1" max="99" required>
+
+        <!-- Gender -->
+        <select id="patientGender" name="gender" required>
+            <option value="" disabled selected>Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+        </select>
+
+        <!-- Department -->
+        <select id="department" name="department" required>
+            <option value="" disabled selected>Select Department</option>
+            {% for dept in departments %}
+            <option value="{{ dept.id }}">{{ dept.department }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Subdivision -->
+        <select id="subdivision" name="subdepartment" style="display:none; margin-top:10px;">
+            <option value="" disabled selected>Select Subdivision</option>
+            {% for dept_id, subs in sub_map.items %}
+                {% for sub in subs %}
+                    <option value="{{ sub.id }}" data-dept="{{ dept_id }}">{{ sub.subdepartment }}</option>
+                {% endfor %}
+            {% endfor %}
+        </select>
+
+        <button type="submit" id="submitBtn" disabled>Submit</button>
+    </form>
+
+    <img src="{% static 'images/combined.png' %}" alt="Rotary Club Logo" class="logo">
+
+    <footer class="footer">
+      Powered by <strong>Cluster Innovation Hub Pvt Ltd</strong>
+    </footer>
+</div>
+
+<script>
+const nameInput = document.getElementById('patientName');
+const contactInput = document.getElementById('patientContact');
+const contactError = document.getElementById('contactError');
+const ageInput = document.getElementById('patientAge');
+const ageBelow1Checkbox = document.getElementById('ageBelow1');
+const genderSelect = document.getElementById('patientGender');
+const departmentSelect = document.getElementById('department');
+const subdivisionSelect = document.getElementById('subdivision');
+const submitBtn = document.getElementById('submitBtn');
+
+// Show/hide subdivisions based on department
+departmentSelect.addEventListener('change', () => {
+    const deptId = departmentSelect.value;
+    const options = subdivisionSelect.querySelectorAll('option[data-dept]');
+    let hasSub = false;
+    options.forEach(opt => {
+        if(opt.getAttribute('data-dept') === deptId){
+            opt.style.display = 'block';
+            hasSub = true;
+        } else { opt.style.display = 'none'; }
+    });
+    subdivisionSelect.style.display = hasSub ? 'block' : 'none';
+    subdivisionSelect.value = '';
+    validateForm();
+});
+
+// Checkbox logic: if age below 1, hide age input
+ageBelow1Checkbox.addEventListener('change', () => {
+    if(ageBelow1Checkbox.checked){
+        ageInput.value = '';
+        ageInput.disabled = true;
+        ageInput.style.display = 'none';
+    } else {
+        ageInput.disabled = false;
+        ageInput.style.display = 'block';
+        ageInput.style.margin = '10px 0 0 0';
+    }
+    validateForm();
+});
+
+// --- Validation ---
+function validateForm(){
+    const nameValid = /^[A-Za-z\s]+$/.test(nameInput.value.trim());
+    // Must start with 6-9 and be 10 digits total
+    const contactValid = /^[6-9][0-9]{9}$/.test(contactInput.value.trim());
+    const ageValid = ageBelow1Checkbox.checked || /^[1-9][0-9]?$/.test(ageInput.value.trim());
+    const genderValid = genderSelect.value !== '';
+    const deptValid = departmentSelect.value !== '';
+    const subValid = subdivisionSelect.style.display === 'block' ? subdivisionSelect.value !== '' : true;
+
+    // Contact error display
+    if(contactInput.value.trim() === ''){
+        contactError.style.display = 'none';
+        contactInput.classList.remove('error');
+    } else if(!contactValid){
+        contactError.style.display = 'block';
+        contactInput.classList.add('error');
+    } else {
+        contactError.style.display = 'none';
+        contactInput.classList.remove('error');
+    }
+
+    submitBtn.disabled = !(nameValid && contactValid && ageValid && genderValid && deptValid && subValid);
+}
+
+// Input restrictions
+nameInput.addEventListener('input', () => {
+    nameInput.value = nameInput.value.replace(/[^A-Za-z\s]/g,'');
+    validateForm();
+});
+
+contactInput.addEventListener('input', () => {
+    contactInput.value = contactInput.value.replace(/[^0-9]/g,'').slice(0,10);
+    validateForm();
+});
+
+ageInput.addEventListener('input', () => {
+    ageInput.value = ageInput.value.replace(/[^0-9]/g,'').slice(0,2);
+    validateForm();
+});
+
+genderSelect.addEventListener('change', validateForm);
+subdivisionSelect.addEventListener('change', validateForm);
+departmentSelect.addEventListener('change', validateForm);
+</script>
+
+</body>
+</html>

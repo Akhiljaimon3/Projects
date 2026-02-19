@@ -1,0 +1,26 @@
+{% for patient in patients %}
+<tr>
+    <td>{{ forloop.counter }}</td>
+    <td>{{ patient.name }}</td>
+    <td>{{ patient.contact }}</td>
+    <td>{{ patient.age|default_if_none:"" }}</td>
+    <td>{{ patient.code }}</td>
+    <td>{{ patient.securitypin }}</td>
+    <td>
+        {% for dept in departments %}
+            {% if dept.id|stringformat:"s" == patient.department %}
+            {{ dept.token }}-{{ patient.token_no }}
+            {% endif %}
+        {% endfor %}
+    </td>
+    <td>{{ patient.added_on|date:"d M Y, h.i A" }}</td>
+    <td>{{ patient.department_name }}</td>
+    <td>
+        {% for offc in officialusers %}
+            {% if offc.id|stringformat:"s" == patient.added_by %}
+            {{ offc.name }}
+            {% endif %}
+        {% endfor %}
+    </td>
+</tr>
+{% endfor %}

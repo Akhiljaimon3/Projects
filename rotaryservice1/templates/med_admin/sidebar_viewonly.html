@@ -1,0 +1,77 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+{% load static %}
+
+<script>
+    document.documentElement.classList.add('prepare-transition');
+
+    const isMobile = window.innerWidth <= 800;
+    const isCollapsed = localStorage.getItem('sidebarState') === 'collapsed';
+
+    if (isMobile || isCollapsed) {
+        document.documentElement.classList.add('sidebar-collapsed');
+    }
+</script>
+
+<div class="sidebar">
+    <div class="logo">
+        <img src="{% static 'images/rtlogo.png' %}" alt="Rotary District 3205 Logo">
+    </div>
+    <ul>
+        <!-- Dashboard -->
+        {% url 'dashboard' as dashboard_url %}
+        <li class="single-link {% if request.path == dashboard_url %}active{% endif %}">
+            <a href="{{ dashboard_url }}" title="Dashboard">
+                <span class="sidebar-icon"><i class="fa-solid fa-house"></i></span>
+                <span class="link-text">Dashboard</span>
+            </a>
+        </li>
+
+        <!-- Reports -->
+        {% url 'patient_report' as patient_report_url %}
+        {% url 'token_report' as token_report_url %}
+        {% url 'consulted_report' as consulted_report_url %}
+        {% url 'medicine_report' as medicine_report_url %}
+        {% url 'spotregister_report' as spotregister_report_url %}
+        <li class="dropdown-manage">
+            <a href="#" class="manage-link" title="Reports">
+                <span class="sidebar-icon"><i class="fa-solid fa-chart-column"></i></span>
+                <span class="link-text">Reports</span>
+                <span class="arrow-down">▾</span>
+            </a>
+            <ol class="manage-dropdown flyout-menu {% if request.path == patient_report_url or request.path == token_report_url or request.path == consulted_report_url or request.path == medicine_report_url  or request.path == spotregister_report_url %}expanded{% else %}hidden{% endif %}">
+                <li class="{% if request.path == patient_report_url %}active{% endif %}">
+                    <a href="{{ patient_report_url }}">Patients Report</a>
+                </li>
+                <li class="{% if request.path == spotregister_report_url %}active{% endif %}">
+                    <a href="{{ spotregister_report_url }}">Spot Register Report</a>
+                </li>
+                <li class="{% if request.path == token_report_url %}active{% endif %}">
+                    <a href="{{ token_report_url }}">Token Report</a>
+                </li>
+                <li class="{% if request.path == consulted_report_url %}active{% endif %}">
+                    <a href="{{ consulted_report_url }}">Consulted Report</a>
+                </li>
+                <li class="{% if request.path == medicine_report_url %}active{% endif %}">
+                    <a href="{{ medicine_report_url }}">Medicine Report</a>
+                </li>
+            </ol>
+        </li>
+
+    </ul>
+    <button class="toggle-btn" aria-label="Toggle sidebar">☰</button>
+</div>
+
+<div class="top-bar">
+    <div class="topbar-profile-area" id="profile-toggle">
+        <span class="admin-name-text">Hi, {{ request.session.name }} ▾</span>
+        <div class="profile-dropdown collapsed" id="profileDropdown">
+            <div class="profile-dropdown-header">
+                <div class="profile-name-block">
+                    <p class="admin-name-label">{{ request.session.name }}</p>
+                </div>
+            </div>
+            <div class="profile-dropdown-divider"></div>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+</div>

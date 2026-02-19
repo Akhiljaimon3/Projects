@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rotary Santhwana Sparsham 2025</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  body { background: #f4f6f9; font-family: "Segoe UI", sans-serif; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+  .app-card { background: #fff; border-radius: 16px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); width: 100%; max-width: 420px; padding: 24px; border-top: 6px solid #003865; }
+  .form-header h1 { color: #003865; font-size: 22px; font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px; text-transform: uppercase; line-height: 1.4; text-align: center; }
+  .form-header h2 { color: #f7a81b; font-size: 16px; font-weight: 600; margin-top: 0; margin-bottom: 16px; text-align: center; }
+  .or-divider { display: flex; align-items: center; text-align: center; margin: 12px 0; color: #666; font-weight: 500; }
+  .or-divider::before, .or-divider::after { content: ""; flex: 1; border-bottom: 1px solid #ccc; }
+  .or-divider:not(:empty)::before { margin-right: .75em; }
+  .or-divider:not(:empty)::after { margin-left: .75em; }
+  .btn-go { margin-top: 20px; border-radius: 10px; font-weight: 600; padding: 10px; background-color: #FDB913; border: none; color: #003865; width: 100%; }
+  .btn-go:hover:not(:disabled) { background-color: #ffbb33; transform: translateY(-2px); box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15); }
+  .btn-go:disabled {background-color: #c8c8c8 !important;color: #252525 !important;cursor: not-allowed !important;transform: none !important;box-shadow: none !important;}
+  .user-card { margin-top: 10px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-left: 5px solid #FDB913; }
+  .btn-success { background-color: #003865 !important; border: none; }
+  .btn-success:disabled { background-color: #6c757d !important; cursor: not-allowed; opacity: 0.6; }
+  .btn-success:hover:not(:disabled) { background-color: #00264d !important; }
+  .pin-box { display: flex; justify-content: center; margin: 15px 0; }
+  .digit-input { width: 50px; height: 55px; font-size: 22px; text-align: center; margin: 0 6px; border: 1.5px solid #ccd6e0; border-radius: 8px; transition: all 0.2s ease; }
+  .digit-input:focus { border-color: #003865; box-shadow: 0 0 6px rgba(0, 56, 101, 0.25); outline: none; }
+  .security-pin-box { display: flex; justify-content: center; margin: 15px 0; }
+  .security-digit-input { width: 45px; height: 45px; font-size: 18px; text-align: center; margin: 0 4px; border: 1.5px solid #ccd6e0; border-radius: 6px; transition: all 0.2s ease; }
+  .security-digit-input:focus { border-color: #003865; box-shadow: 0 0 6px rgba(0, 56, 101, 0.25); outline: none; }
+  .security-digit-input.filled { border-color: #28a745; background-color: #f8fff8; }
+  label { font-weight: 500; color: #003865; display: block; margin-bottom: 6px; }
+  .security-label { font-size: 14px; color: #666; margin-top: 10px; }
+  .pin-section { background: #f8f9fa; padding: 15px; border-radius: 10px; margin: 15px 0; border-left: 4px solid #003865; }
+  .pin-status { font-size: 12px; margin-top: 5px; text-align: center; }
+  .pin-status.valid { color: #28a745; }
+  .pin-status.invalid { color: #dc3545; }
+  .asha-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .asha-name {
+    font-weight: 700;
+    color: #003865;
+    font-size: 16px;
+    text-align: left;
+  }
+
+  .followup-options {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.35s ease, opacity 0.35s ease;
+  opacity: 0;
+}
+
+.followup-options.expanded {
+  max-height: 200px; /* adjust if needed */
+  opacity: 1;
+}
+
+.followup-heading {
+  font-size: 18px;
+  font-weight: 700;
+  color: #003865; /* deep blue */
+  text-align: center;
+  margin-bottom: 12px;
+  border-bottom: 2px solid #FDB913; /* subtle accent line */
+  padding-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+</style>
+</head>
+<body>
+  <!-- Top Welcome Bar -->
+
+
+<div class="app-card">
+  <div class="asha-header">
+
+      <div class="asha-name">Welcome, Rtn. {{ reg.name }}</div>
+
+  </div>
+
+  <div class="form-header">
+    <h1>Rotary Santhwana Sparsham 2025</h1>
+    <h2>Free Mega Medical Camp</h2>
+  </div>
+
+  <label for="code1" class="fw-bold">Enter Registration Number</label>
+  <div class="pin-box mb-2">
+    <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="digit-input" id="code1">
+    <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="digit-input" id="code2">
+    <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="digit-input" id="code3">
+    <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="digit-input" id="code4">
+  </div>
+
+  <div class="or-divider">OR</div>
+  <input type="text" id="contact" class="form-control mb-2" placeholder="Enter Contact Number (10 digits)" maxlength="10" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+  <div class="or-divider">OR</div>
+  <input type="text" id="name" class="form-control" placeholder="Enter Name" oninput="this.value=this.value.replace(/[^a-zA-Z\s]/g,'')">
+
+  <button class="btn btn-go w-100" onclick="fetchUsers()">GO</button>
+
+  <div id="results"></div>
+</div>
+
+<script>
+// --- Cookie helper ---
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+// --- Setup 4-digit Registration Code ---
+const codeInputs = [
+  document.getElementById('code1'),
+  document.getElementById('code2'),
+  document.getElementById('code3'),
+  document.getElementById('code4')
+];
+
+function setupPinInputs(inputs) {
+  inputs.forEach((input, i) => {
+    input.addEventListener('input', () => {
+      input.value = input.value.replace(/[^0-9]/g,'');
+      if(input.value && i < inputs.length-1) inputs[i+1].focus();
+      toggleGoButton();
+    });
+    input.addEventListener('keydown', (e) => {
+      if(e.key === "Backspace" && input.value === "" && i > 0) inputs[i-1].focus();
+      setTimeout(toggleGoButton, 0);
+    });
+  });
+}
+setupPinInputs(codeInputs);
+
+function getCode() {
+  return codeInputs.map(i => i.value).join('');
+}
+
+// --- Inputs ---
+const contactInput = document.getElementById("contact");
+const nameInput = document.getElementById("name");
+const goButton = document.querySelector('.btn-go');
+
+// Disable button by default on page load
+goButton.disabled = true;
+
+// Enable button only if one field is valid
+function toggleGoButton() {
+  const code = getCode();
+  const contact = contactInput.value.trim();
+  const name = nameInput.value.trim();
+
+  const validCode = code.length === 4;
+  const validContact = contact.length === 10;
+  const validName = name.length > 0;
+
+  goButton.disabled = !(validCode || validContact || validName);
+}
+
+// Attach listeners
+contactInput.addEventListener('input', () => {
+  contactInput.value = contactInput.value.replace(/[^0-9]/g,'');
+  toggleGoButton();
+});
+
+nameInput.addEventListener('input', () => {
+  nameInput.value = nameInput.value.replace(/[^a-zA-Z\s]/g,'');
+  toggleGoButton();
+});
+
+// --- Fetch Users ---
+function fetchUsers() {
+  const code = getCode();
+  const contact = document.getElementById("contact").value.trim();
+  const name = document.getElementById("name").value.trim();
+
+  if (code && code.length !== 4) { alert("Code must be 4 digits"); return; }
+
+  if (contact && contact.length !== 10) { alert("Contact must be 10 digits"); return; }
+  if (name && !/^[a-zA-Z\s]+$/.test(name)) { alert("Name must contain only alphabets"); return; }
+
+  const params = new URLSearchParams({ code, contact, name });
+  fetch(`/api/search_patients/?${params.toString()}`)
+    .then(res => res.json())
+    .then(data => {
+      const matchedUsers = data.results || [];
+      const resultsDiv = document.getElementById("results");
+      resultsDiv.innerHTML = "";
+
+      if (matchedUsers.length === 0) {
+        resultsDiv.innerHTML = `<div class="alert alert-warning mt-3 text-center">No users found!</div>`;
+      } else if (matchedUsers.length === 1) {
+        showUserCard(matchedUsers[0], 0);
+      } else {
+        let listHtml = `<div class="mt-3">`;
+        matchedUsers.forEach((u, i) => {
+          listHtml += `<div class="card user-option p-3 mb-2" onclick='showUserCard(${JSON.stringify(u)}, ${i})' style="cursor: pointer;">
+              <h6>${u.name}</h6>
+              <small>${u.department}</small><br>
+              <small>📞 ${u.contact}</small>
+            </div>
+            <div id="userCardContainer-${i}"></div>`;
+        });
+        listHtml += `</div>`;
+        resultsDiv.innerHTML = listHtml;
+      }
+    })
+    .catch(err => { console.error("Error fetching patients:", err); alert("Search failed. Please try again."); });
+}
+
+// --- User Card Display ---
+function showUserCard(user, index) {
+  let container = document.getElementById("userCardContainer-" + index);
+  if (!container) {
+    container = document.createElement('div');
+    container.id = "userCardContainer-" + index;
+    document.getElementById("results").appendChild(container);
+  }
+
+  container.innerHTML = `
+    <div class="card user-card mt-2">
+      <div class="card-body text-center position-relative">
+        <button type="button" class="btn-close position-absolute top-0 end-0 m-2"
+          onclick="document.getElementById('userCardContainer-${index}').innerHTML = ''"></button>
+        <p><strong>Registration Code:</strong> ${user.code}</p>
+        <h5 class="card-title">${user.name}</h5>
+        <p><strong>Contact:</strong> ${user.contact}</p>
+        <p><strong>Department:</strong> ${user.department}</p>
+  `;
+
+  if (user.medicineissued === 1) {
+    container.innerHTML += `
+      <div class="alert alert-success mt-2">
+        Medicine Collected ✅
+        ${user.medicineamount ? `<br>Amount: ₹${user.medicineamount}` : ''}
+      </div>
+    `;
+  } 
+    
+  else if (user.confirm_entry === 1) {
+    container.innerHTML = `
+      <div class="card user-card mt-2">
+        <div class="card-body text-center position-relative">
+          <button type="button" class="btn-close position-absolute top-0 end-0 m-2"
+            onclick="document.getElementById('userCardContainer-${index}').innerHTML = ''"></button>
+            <p><strong>Registration Code:</strong> ${user.code}</p>
+          <h5 class="card-title">${user.name}</h5>
+
+          <p><strong>Contact:</strong> ${user.contact}</p>
+          <p><strong>Department:</strong> ${user.department}</p>
+    `;
+
+    if (user.consulted === 1) {
+      container.innerHTML += `
+      <div class="alert alert-success mt-2">
+        Token Collected ✅<br>
+        Consultation Completed ✅
+        ${user.medicineamount ? `<br>Amount: ₹${user.medicineamount}` : ''}
+      </div>
+
+      <div class="pin-section mt-2" id="pinSection-${index}">
+          <label class="security-label">Enter 3-Digit Security Pin to continue</label>
+          <div class="security-pin-box" id="securityPinContainer-${index}">
+              <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="security-digit-input" id="pin1-${index}">
+              <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="security-digit-input" id="pin2-${index}">
+              <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="security-digit-input" id="pin3-${index}">
+          </div>
+          <div id="pinStatus-${index}" class="pin-status invalid">Enter 3-digit PIN to continue</div>
+      </div>
+      <div id="actionButton-${index}">
+        <button class="btn btn-success mt-2 w-100"
+          onclick="verifyPinFormedicine(${user.id}, ${index})">
+          Confirm PIN
+        </button>
+      </div>
+    `;
+
+    setTimeout(() => { setupSecurityPinInputs(`securityPinContainer-${index}`, index); }, 100);
+    
+    } else {
+      container.innerHTML += `
+        <div class="alert alert-success mt-2">
+          Token Collected ✅
+          ${user.medicineamount ? `<br>Amount: ₹${user.medicineamount}` : ''}
+        </div>
+
+        <div class="pin-section mt-2" id="pinSection-${index}">
+            <label class="security-label">Enter 3-Digit Security Pin to continue</label>
+            <div class="security-pin-box" id="securityPinContainer-${index}">
+                <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="security-digit-input" id="pin1-${index}">
+                <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="security-digit-input" id="pin2-${index}">
+                <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="security-digit-input" id="pin3-${index}">
+            </div>
+            <div id="pinStatus-${index}" class="pin-status invalid">Enter 3-digit PIN to continue</div>
+        </div>
+        <div id="actionButton-${index}">
+          <button class="btn btn-success mt-2 w-100"
+            onclick="verifyPinForFollowup(${user.id}, ${index})">
+            Confirm PIN
+          </button>
+        </div>
+    `;
+    setTimeout(() => { setupSecurityPinInputs(`securityPinContainer-${index}`, index); }, 100);
+    }
+  } else {
+    // Security PIN flow
+    container.innerHTML = `
+      <div class="card user-card mt-2">
+        <div class="card-body text-center position-relative">
+          <button type="button" class="btn-close position-absolute top-0 end-0 m-2"
+            onclick="document.getElementById('userCardContainer-${index}').innerHTML = ''"></button>
+
+          <p><strong>Registration Code:</strong> ${user.code}</p>
+          <h5 class="card-title">${user.name}</h5>
+          <p><strong>Contact:</strong> ${user.contact}</p>
+          <p><strong>Department:</strong> ${user.department}</p>
+
+          <!-- PIN Inputs Section -->
+          <div class="pin-section mt-2" id="pinSection-${index}">
+            <label class="security-label">Enter 3-Digit Security Pin</label>
+            <div class="security-pin-box" id="securityPinContainer-${index}">
+              <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="security-digit-input" id="pin1-${index}">
+              <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="security-digit-input" id="pin2-${index}">
+              <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="security-digit-input" id="pin3-${index}">
+            </div>
+            <div id="pinStatus-${index}" class="pin-status invalid">Enter 3-digit PIN to continue</div>
+          </div>
+
+          <!-- Action Button Section -->
+          <div id="actionButton-${index}">
+            <button class="btn btn-success mt-2 w-100"
+              onclick="verifySecurityPin(${user.id}, ${index}, '${user.name}')">
+              Confirm Registration
+            </button>
+          </div>
+
+        </div>
+      </div>
+    `;
+
+    setTimeout(() => { setupSecurityPinInputs(`securityPinContainer-${index}`, index); }, 100);
+  }
+}
+
+// --- PIN Input Setup ---
+function setupSecurityPinInputs(containerId, index) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const inputs = container.querySelectorAll('.security-digit-input');
+  const confirmBtn = document.querySelector(`#userCardContainer-${index} .btn-success`);
+  confirmBtn.disabled = true;
+
+  inputs.forEach((input, i) => {
+    input.addEventListener('input', () => {
+      input.value = input.value.replace(/[^0-9]/g,'');
+      if (input.value) input.classList.add('filled'); else input.classList.remove('filled');
+      if(input.value && i < inputs.length-1) inputs[i+1].focus();
+      checkPinCompletion(inputs, confirmBtn, index);
+    });
+    input.addEventListener('keydown', (e) => { if(e.key === "Backspace" && input.value === "" && i > 0) inputs[i-1].focus(); });
+  });
+}
+
+function checkPinCompletion(inputs, confirmBtn, index) {
+  const allFilled = Array.from(inputs).every(input => input.value.length === 1);
+  const pinStatus = document.getElementById(`pinStatus-${index}`);
+  if (allFilled) {
+    confirmBtn.disabled = false;
+    pinStatus.textContent = "✓ PIN ready for verification";
+    pinStatus.className = "pin-status valid";
+  } else {
+    confirmBtn.disabled = true;
+    pinStatus.textContent = "Enter 3-digit PIN to continue";
+    pinStatus.className = "pin-status invalid";
+  }
+}
+
+function getSecurityPin(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return '';
+  const inputs = container.querySelectorAll('.security-digit-input');
+  return Array.from(inputs).map(input => input.value).join('');
+}
+
+// --- Verify Security PIN ---
+function verifySecurityPin(patientId, index, userName) {
+  const pin = getSecurityPin(`securityPinContainer-${index}`);
+  if (pin.length !== 3) { alert("Please enter a 3-digit security pin"); return; }
+
+  fetch("/api/verify_pin/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-CSRFToken": getCookie("csrftoken") },
+    body: JSON.stringify({ patient_id: patientId, pin: pin })
+  })
+  .then(res => res.json())
+  .then(data => {
+    const pinStatus = document.getElementById(`pinStatus-${index}`);
+    if (data.success) {
+      pinStatus.textContent = "✓ PIN verified successfully";
+      pinStatus.className = "pin-status valid";
+      confirmRegistration(index, userName);
+    } else {
+      pinStatus.textContent = "✗ Incorrect PIN";
+      pinStatus.className = "pin-status invalid";
+    }
+  }).catch(err => console.error("PIN verification failed", err));
+}
+
+function verifyPinForFollowup(patientId, index) {
+  const pin = getSecurityPin(`securityPinContainer-${index}`);
+  if (pin.length !== 3) { alert("Please enter a 3-digit security pin"); return; }
+
+  fetch("/api/verify_securitypin/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-CSRFToken": getCookie("csrftoken") },
+    body: JSON.stringify({ patient_id: patientId, pin: pin })
+  })
+  .then(res => res.json())
+  .then(data => {
+    const pinStatus = document.getElementById(`pinStatus-${index}`);
+    if (data.success) {
+      pinStatus.textContent = "✓ PIN verified successfully";
+      pinStatus.className = "pin-status valid";
+
+      // Replace the PIN area with followup form
+      showFollowupArea(patientId, index);
+
+    } else {
+      pinStatus.textContent = "✗ Incorrect PIN";
+      pinStatus.className = "pin-status invalid";
+    }
+  }).catch(err => console.error("PIN verification failed", err));
+}
+
+function showFollowupArea(patientId, index) {
+  const container = document.getElementById(`userCardContainer-${index}`);
+  if (!container) return;
+
+  // Replace PIN inputs
+  const pinSection = container.querySelector('#pinSection-' + index);
+  if (pinSection) {
+    pinSection.innerHTML = `
+      <h5 class="followup-heading">Consultation Confirmation</h5>
+
+      <div class="form-check mb-2">
+        <input class="form-check-input" type="checkbox" id="consulted-${index}" onchange="toggleFollowupOptions(${index})">
+        <label class="form-check-label" for="consulted-${index}">Consulted</label>
+      </div>
+
+      <div id="followupOptions-${index}" class="followup-options" style="padding: 8px;">
+        <label class="security-label">Follow Up</label>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="followup-${index}" id="followupYes-${index}" value="Yes">
+          <label class="form-check-label" for="followupYes-${index}">Yes</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="followup-${index}" id="followupNo-${index}" value="No">
+          <label class="form-check-label" for="followupNo-${index}">No</label>
+        </div>
+      </div>
+    `;
+  }
+
+  // Replace the action button
+  const actionButton = container.querySelector('#actionButton-' + index);
+  if (actionButton) {
+    actionButton.innerHTML = `
+      <button class="btn btn-success mt-2 w-100" onclick="markFollowup(${patientId}, ${index})">
+        Confirm Consultation
+      </button>
+    `;
+  }
+}
+
+// Function to show/hide Follow Up options
+function toggleFollowupOptions(index) {
+  const checkbox = document.getElementById(`consulted-${index}`);
+  const followupDiv = document.getElementById(`followupOptions-${index}`);
+  if (checkbox.checked) followupDiv.classList.add('expanded');
+  else followupDiv.classList.remove('expanded');
+}
+
+function verifyPinFormedicine(patientId, index) {
+  const pin = getSecurityPin(`securityPinContainer-${index}`);
+  if (pin.length !== 3) { alert("Please enter a 3-digit security pin"); return; }
+
+  fetch("/api/verify_securitypin/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-CSRFToken": getCookie("csrftoken") },
+    body: JSON.stringify({ patient_id: patientId, pin: pin })
+  })
+  .then(res => res.json())
+  .then(data => {
+    const pinStatus = document.getElementById(`pinStatus-${index}`);
+    if (data.success) {
+      pinStatus.textContent = "✓ PIN verified successfully";
+      pinStatus.className = "pin-status valid";
+
+      // Replace the PIN area with followup form
+      showMedicineArea(patientId, index);
+
+    } else {
+      pinStatus.textContent = "✗ Incorrect PIN";
+      pinStatus.className = "pin-status invalid";
+    }
+  }).catch(err => console.error("PIN verification failed", err));
+}
+
+function showMedicineArea(patientId, index) {
+  const container = document.getElementById(`userCardContainer-${index}`);
+  if (!container) return;
+
+  // Replace PIN inputs
+  const pinSection = container.querySelector('#pinSection-' + index);
+  if (pinSection) {
+    pinSection.innerHTML = `
+      <h5 class="followup-heading">Medicine Collection</h5>
+
+      <div class="form-check mb-2">
+        <input class="form-check-input" type="checkbox" id="medicineIssued-${index}">
+        <label class="form-check-label" for="medicineIssued-${index}">Medicine Collected</label>
+      </div>
+
+      <div class="mb-2">
+        <label for="medicineAmount-${index}" class="form-label">Amount (optional)</label>
+        <input type="number" class="form-control" id="medicineAmount-${index}" placeholder="Enter amount" min="0">
+      </div>
+    `;
+  }
+
+  // Replace the action button
+  const actionButton = container.querySelector('#actionButton-' + index);
+  if (actionButton) {
+    actionButton.innerHTML = `
+      <button class="btn btn-success mt-2 w-100" onclick="markMedicine(${patientId}, ${index})">
+        Medicine Collected
+      </button>
+    `;
+  }
+}
+
+function confirmRegistration(index, name) {
+  const button = document.querySelector(`#userCardContainer-${index} .btn-success`);
+  if (button) {
+    button.disabled = true;
+    button.innerText = "Confirmed ✅";
+    button.classList.remove('btn-success');
+    button.classList.add('btn-secondary');
+  }
+  window.location.href = "/confirmationsuccess?state=register";
+}
+
+// --- Mark Followup ---
+function markFollowup(patientId, index) {
+  const consulted = document.getElementById(`consulted-${index}`).checked;
+  const followYes = document.getElementById(`followupYes-${index}`).checked;
+  const followNo = document.getElementById(`followupNo-${index}`).checked;
+
+  if (!consulted) { alert("Please check 'Consulted'"); return; }
+  if (!followYes && !followNo) { alert("Please select Yes or No for Follow Up"); return; }
+
+  // You can also optionally send which option was selected
+  const followValue = followYes ? "Yes" : "No";
+
+  fetch("/api/mark_followup/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-CSRFToken": getCookie("csrftoken") },
+    body: JSON.stringify({ patient_id: patientId, followup: followValue })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      // disable the button and go to success page
+      const button = document.querySelector(`#userCardContainer-${index} .btn-success`);
+      if (button) {
+        button.disabled = true;
+        button.innerText = "Followup Marked ✅";
+        button.classList.remove('btn-success');
+        button.classList.add('btn-secondary');
+      }
+      window.location.href = "/confirmationsuccess?state=followup";
+    } else {
+      alert(data.error || "Failed to mark followup");
+    }
+  })
+  .catch(err => console.error("Followup error:", err));
+}
+
+function markMedicine(patientId, index) {
+  const medicineIssued = document.getElementById(`medicineIssued-${index}`).checked;
+  const medicineAmountInput = document.getElementById(`medicineAmount-${index}`);
+  const medicineAmount = medicineAmountInput ? parseInt(medicineAmountInput.value || 0) : 0;
+
+  if (!medicineIssued && medicineAmount > 0) {
+    alert("Please check 'Medicine Issued' if entering amount");
+    return;
+  }
+
+  fetch("/api/mark_medicine/", {
+    method: "POST",
+    headers: { 
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCookie("csrftoken")
+    },
+    body: JSON.stringify({ 
+      patient_id: patientId, 
+      medicine_issued: medicineIssued, 
+      medicine_amount: medicineAmount 
+    })
+  })
+  .then(async res => {
+    let data;
+    try {
+      data = await res.json(); // Try parse JSON
+    } catch(e) {
+      const text = await res.text();
+      console.error("Unexpected server response:", text);
+      alert("Server returned an invalid response. Check console.");
+      return;
+    }
+    return data;
+  })
+  .then(data => {
+    if (!data) return;
+
+    if (data.success) {
+      const button = document.querySelector(`#userCardContainer-${index} .btn-success`);
+      if (button) {
+        button.disabled = true;
+        button.innerText = "Medicine Marked ✅";
+        button.classList.remove('btn-success');
+        button.classList.add('btn-secondary');
+      }
+      window.location.href = "/confirmationsuccess?state=medicine";
+    } else {
+      alert(data.error || "Failed to mark medicine");
+    }
+  })
+  .catch(err => console.error("Medicine error:", err));
+}
+</script>
+</body>
+</html>

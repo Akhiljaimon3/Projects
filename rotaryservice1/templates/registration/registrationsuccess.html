@@ -1,0 +1,147 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPARSHAM - Submission Success</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f6f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: #ffffff;
+      width: 95%;
+      max-width: 420px;
+      padding: 32px 28px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      text-align: center;
+      border-top: 6px solid #003865;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 450px;
+    }
+
+    .form-header h1 {
+      color: #003865;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      line-height: 1.4;
+    }
+
+    .form-header .sparsham {
+      color: #f7a81b;
+    }
+
+    .tick {
+      font-size: 60px;
+      color: #28a745; /* green tick */
+      margin-bottom: 15px;
+    }
+
+    h2 {
+      color: #28a745; /* Success green */
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .info {
+      font-size: 16px;
+      margin: 8px 0;
+      font-weight: 600;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #f7a81b;
+      color: #003865;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      margin-top: 22px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background: #ffbb33;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 12px rgba(0,0,0,0.15);
+    }
+
+    .logo {
+      width: 290px;
+      margin: 8px auto 0 auto;
+    }
+    .footer {
+  margin-top: 6px;
+  font-size: 11px;
+  color: #888;
+  text-align: center;
+  font-weight: 500;
+}
+.footer strong {
+  color: #000;
+}
+.form-header h2 {
+    color: #f7a81b;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="form-header">
+    <h1>Rotary Santhwana Sparsham 2025</h1>
+    <h2>Free Mega Medical Camp</h2>
+  </div>
+
+    <!-- Tick mark -->
+    <div class="tick">&#10004;</div>
+
+    <h2>Patient details submitted successfully!</h2>
+
+    <!-- Show Code and Security PIN -->
+     <p class="info" style="color: #003865;"><strong>{{ patient_name }}</strong></p>
+    <p class="info" style="color: #003865;"><strong>{{ patient_department }}</strong></p>
+    <p class="info">Patient Registration Number: <strong>{{ code }}</strong></p>
+    <p class="info">Security PIN: <strong>{{ pin }}</strong></p>
+
+    <button id="addAnotherBtn">Add Another Patient</button>
+
+    <img src="{% static 'images/combined.png' %}" alt="Rotary Club Logo" class="logo">
+
+<footer class="footer">
+  Powered by <strong>Cluster Innovation Hub Pvt Ltd</strong>
+</footer>
+  </div>
+
+  <script>
+    const addAnotherBtn = document.getElementById('addAnotherBtn');
+    addAnotherBtn.addEventListener('click', () => {
+      // Redirect to patient details form page
+      window.location.href = "{% url 'registration2' %}"; // Django URL name of patient form
+    });
+  </script>
+</body>
+</html>

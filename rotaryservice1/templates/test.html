@@ -1,0 +1,156 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPARSHAM - Patient Details</title>
+<style>
+body { font-family: "Segoe UI", Roboto, Arial, sans-serif; margin:0; padding:0; background:#f4f6f9; display:flex; justify-content:center; align-items:center; height:100vh; }
+.container { background:#fff; width:95%; max-width:420px; padding:32px 28px; border-radius:12px; box-shadow:0 6px 20px rgba(0,0,0,0.15); text-align:center; border-top:6px solid #003865; display:flex; flex-direction:column; justify-content:space-between; min-height:540px; }
+.form-header h1 { color:#003865; font-size:22px; font-weight:700; margin-bottom:12px; letter-spacing:0.5px; text-transform:uppercase; line-height:1.4; }
+.form-header .sparsham { color:#f7a81b; }
+h2 { color:#003865; font-size:18px; font-weight:600; margin-bottom:16px; }
+input { width:90%; padding:12px; font-size:16px; border:1.5px solid #ccd6e0; border-radius:8px; margin-top:10px; text-align:left; transition: all 0.3s ease; }
+select { width:100%; padding:12px; font-size:16px; border:1.5px solid #ccd6e0; border-radius:8px; margin-top:10px; text-align:left; transition: all 0.3s ease; }
+input:focus, select:focus { border-color:#003865; outline:none; box-shadow:0 0 6px rgba(0,56,101,0.25); }
+input.error { border-color:red; }
+button { width:100%; padding:14px; background:#f7a81b; color:#003865; border:none; border-radius:8px; font-size:16px; font-weight:bold; margin-top:22px; cursor:pointer; transition:all 0.3s ease; }
+button:disabled { background:#dcdcdc; color:#7a7a7a; cursor:not-allowed; }
+button:hover:not(:disabled) { background:#ffbb33; transform:translateY(-2px); box-shadow:0 5px 12px rgba(0,0,0,0.15); }
+.logo {
+      width: 290px;
+      margin: 20px auto 0 auto;
+    }
+.error-msg { color:red; margin-bottom:10px; }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="form-header">
+        <h1>Mega Medical Camp<br><span class="sparsham">SPARSHAM 2025</span></h1>
+    </div>
+
+    <h2>Patient Details</h2>
+
+    {% if error %}
+        <div class="error-msg">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="{% url 'registration3' %}">
+        {% csrf_token %}
+        <!-- Name -->
+        <input type="text" id="patientName" name="name" placeholder="Enter Patient Name" required>
+
+        <!-- Age -->
+        <input type="number" id="patientAge" name="age" placeholder="Enter Age" min="0" max="120" required>
+
+        <!-- Gender -->
+        <select id="patientGender" name="gender" required>
+            <option value="" disabled selected>Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+        </select>
+
+        <!-- Department -->
+        <select id="department" name="department" required>
+            <option value="" disabled selected>Select Department</option>
+            {% for dept in departments %}
+            <option value="{{ dept.id }}">{{ dept.department }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Subdivision -->
+        <select id="subdivision" name="subdepartment" style="display:none; margin-top:10px;">
+            <option value="" disabled selected>Select Subdivision</option>
+            {% for dept_id, subs in sub_map.items %}
+                {% for sub in subs %}
+                    <option value="{{ sub.id }}" data-dept="{{ dept_id }}">{{ sub.sub }}</option>
+                {% endfor %}
+            {% endfor %}
+        </select>
+
+        <button type="submit" id="submitBtn" disabled>Submit</button>
+    </form>
+
+    <img src="{% static 'images/combined.png' %}" alt="Rotary Club Logo" class="logo">
+</div>
+
+
+<script>
+const nameInput = document.getElementById('patientName');
+const ageInput = document.getElementById('patientAge');
+const genderSelect = document.getElementById('patientGender');
+const departmentSelect = document.getElementById('department');
+const subdivisionSelect = document.getElementById('subdivision');
+const submitBtn = document.getElementById('submitBtn');
+const form = document.querySelector('form');
+
+let isSubmitting = false; // Prevent double submission
+
+departmentSelect.addEventListener('change', () => {
+    const deptId = departmentSelect.value;
+    const options = subdivisionSelect.querySelectorAll('option[data-dept]');
+    let hasSub = false;
+    options.forEach(opt => {
+        if(opt.getAttribute('data-dept') === deptId){
+            opt.style.display = 'block';
+            hasSub = true;
+        } else { opt.style.display = 'none'; }
+    });
+    subdivisionSelect.style.display = hasSub ? 'block' : 'none';
+    subdivisionSelect.value = '';
+    validateForm();
+});
+
+function validateForm(){
+    const nameValid = nameInput.value.trim() !== '';
+    const ageValid = ageInput.value.trim() !== '' && !isNaN(ageInput.value) && ageInput.value > 0;
+    const genderValid = genderSelect.value !== '';
+    const deptValid = departmentSelect.value !== '';
+    const subValid = subdivisionSelect.style.display === 'block' ? subdivisionSelect.value !== '' : true;
+    submitBtn.disabled = !(nameValid && ageValid && genderValid && deptValid && subValid);
+}
+
+nameInput.addEventListener('input', validateForm);
+ageInput.addEventListener('input', validateForm);
+genderSelect.addEventListener('change', validateForm);
+subdivisionSelect.addEventListener('change', validateForm);
+
+// ✅ INTERCEPT FORM SUBMISSION
+form.addEventListener('submit', async (e) => {
+    e.preventDefault(); // Stop normal submit
+    if (isSubmitting) return;
+
+    const deptId = departmentSelect.value;
+    if (!deptId) {
+        alert("Please select a department.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`/check-dept-limit/?department_id=${deptId}`);
+        const data = await response.json();
+
+        if (!data.success) {
+            // ❌ Limit reached — show message in Malayalam
+            alert(data.message);
+            return;
+        }
+
+        // ✅ Limit OK — proceed with submission
+        isSubmitting = true;
+        form.submit();
+
+    } catch (err) {
+        alert("ഒരു പിശക് സംഭവിച്ചു. ദയവായി വീണ്ടും ശ്രമിക്കുക."); // Error occurred
+        console.error(err);
+    }
+});
+</script>
+
+
+
+</body>
+</html>

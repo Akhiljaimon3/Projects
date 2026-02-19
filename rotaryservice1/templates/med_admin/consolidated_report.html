@@ -1,0 +1,263 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPARSHAM 2025 - Consolidated Report</title>
+
+<!-- Sidebar CSS -->
+<link href="{% static 'med_admin/sidebar/sidebar.css' %}" rel="stylesheet">
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+
+<style>
+/* Main content */
+.main-content { margin-left: 220px; padding: 20px; transition: margin-left 0.3s ease; }
+.display-area { position: relative; }
+
+/* Header + Button layout */
+.manage-users-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+/* Button style */
+#export-pdf {
+    padding: 10px 25px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    background-color: #054c97ff;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+}
+#export-pdf:hover { background-color: #0361d6ff; box-shadow: 0 5px 12px rgba(0,0,0,0.25); }
+
+/* Toggle buttons */
+.toggle-group { display:flex; flex-wrap:wrap; justify-content:center; gap:12px; margin-bottom:20px; }
+.toggle-link {
+    padding:10px 20px;
+    font-weight:600;
+    border-radius:50px;
+    border:2px solid #0550a1ff;
+    background:#fff;
+    color:#04468bff;
+    text-decoration:none;
+    text-align:center;
+    cursor:pointer;
+    box-shadow:0 3px 6px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+.toggle-link.active { background:#054c97ff; color:#fff; box-shadow:0 5px 12px rgba(0,123,255,0.4); transform:translateY(-2px); }
+
+/* Tables */
+table.dataTable { width:100% !important; }
+.dataTables_wrapper { overflow-x:auto; }
+
+/* Alternating column shading */
+table.dataTable td:nth-child(odd), table.dataTable th:nth-child(odd) { background-color: #f2f9ff; }
+table.dataTable td:nth-child(even), table.dataTable th:nth-child(even) { background-color: #e6f2ff; }
+
+/* SL, Name, Ward columns very light blue for normal rows only */
+table.dataTable tbody td:nth-child(1),
+table.dataTable tbody td:nth-child(2),
+table.dataTable tbody td:nth-child(3) {
+    background-color: #fafbfc !important; /* very light blue */
+}
+
+/* Total column (last column) slightly darker with black text for normal rows */
+table.dataTable tbody td:last-child {
+    background-color: #cce0ff !important;
+    color: #000;
+    font-weight: bold;
+}
+
+/* Total row - all columns blue with black text */
+tfoot td {
+    background-color: #b3c6ff !important;
+    color: #000;
+    font-weight: bold;
+}
+
+/* Child row table for mobile */
+.child-table { margin:0; padding:5px 10px; width:100%; border-collapse: collapse; background:#f9f9f9; }
+.child-table td { padding:4px 8px; border:1px solid #ddd; }
+tr.shown { background-color: #eef6ff; }
+
+/* Mobile adjustments */
+@media (max-width:768px){
+    .main-content { margin-left:20px; padding:10px; }
+    .toggle-group { flex-direction:column; gap:10px; }
+    .manage-users-header { flex-direction:column; align-items:flex-start; gap:10px; }
+    #export-pdf { width:100%; text-align:center; }
+
+    /* Hide all dept columns on mobile except Name + Ward */
+    #asha-table td:nth-child(n+4), #asha-table th:nth-child(n+4),
+    #rotarian-table td:nth-child(n+3), #rotarian-table th:nth-child(n+3) { display:none; }
+}
+
+body.sidebar-collapsed .main-content { margin-left:0; }
+</style>
+</head>
+<body>
+{% include 'med_admin/sidebar.html' %}
+
+<div class="main-content sidebar-visible">
+    <div class="display-area">
+        <div class="manage-users-header">
+            <h2><i class="fa-solid fa-table"></i> Consolidated Report</h2>
+            <button id="export-pdf">Download PDF</button>
+        </div>
+
+        <div class="toggle-group">
+            <a href="javascript:void(0)" id="asha-link" class="toggle-link active">ASHA Workers</a>
+            <a href="javascript:void(0)" id="rotarian-link" class="toggle-link">Rotarians</a>
+        </div>
+
+        <!-- ASHA Table -->
+        <div id="asha-table-wrapper">
+            <table id="asha-table" class="display nowrap table table-bordered table-striped table-hover align-middle">
+                <thead class="table-primary text-center">
+                    <tr>
+                        <th>SL</th>
+                        <th>Name</th>
+                        <th>Ward</th>
+                        {% for dept in departments %}<th>{{ dept }}</th>{% endfor %}
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in asha_data %}
+                    <tr>
+                        <td class="text-center">{{ forloop.counter }}</td>
+                        <td>{{ a.name }}</td>
+                        <td class="text-center">{{ a.ward }}</td>
+                        {% for c in a.counts %}<td class="text-center">{{ c }}</td>{% endfor %}
+                        <td class="text-center"><strong>{{ a.total }}</strong></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot class="text-center">
+                    <tr>
+                        <td colspan="3">Total</td>
+                        {% for total in total_per_dept %}<td>{{ total }}</td>{% endfor %}
+                        <td>{{ grand_total }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <!-- Rotarian Table -->
+        <div id="rotarian-table-wrapper" style="display:none;">
+            <table id="rotarian-table" class="display nowrap table table-bordered table-striped table-hover align-middle">
+                <thead class="table-primary text-center">
+                    <tr>
+                        <th>SL</th>
+                        <th>Name</th>
+                        {% for dept in departments %}<th>{{ dept }}</th>{% endfor %}
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in rotarian_data %}
+                    <tr>
+                        <td class="text-center">{{ forloop.counter }}</td>
+                        <td>{{ r.name }}</td>
+                        {% for c in r.counts %}<td class="text-center">{{ c }}</td>{% endfor %}
+                        <td class="text-center"><strong>{{ r.total }}</strong></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot class="text-center">
+                    <tr>
+                        <td colspan="2">Total</td>
+                        {% for total in total_per_dept_rotarian %}<td>{{ total }}</td>{% endfor %}
+                        <td>{{ grand_total_rotarian }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- JS Libraries -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+<script>
+$(document).ready(function(){
+
+    function initTable(tableId){
+        const table = $(tableId).DataTable({
+            paging:false,
+            info:false,
+            searching:false,
+            ordering:false,
+            scrollX:true
+        });
+
+        $(tableId+' tbody').on('click','tr',function(){
+            if($(window).width()>768) return;
+            const row = table.row(this);
+            const headers = [];
+            $(tableId+' thead th').each(function(){ headers.push($(this).text().trim()); });
+            if(row.child.isShown()){ row.child.hide(); $(this).removeClass('shown'); }
+            else{
+                let html='<table class="child-table">';
+                for(let i=3;i<headers.length;i++){ html+=`<tr><td><strong>${headers[i]}</strong></td><td>${row.data()[i]}</td></tr>`; }
+                html+='</table>';
+                row.child(html).show(); $(this).addClass('shown');
+            }
+        });
+        return table;
+    }
+
+    const ashaTable = initTable('#asha-table');
+    const rotarianTable = initTable('#rotarian-table');
+
+    // Toggle tables
+    $('#asha-link').click(function(){
+        $(this).addClass('active'); $('#rotarian-link').removeClass('active');
+        $('#asha-table-wrapper').show(); $('#rotarian-table-wrapper').hide();
+    });
+    $('#rotarian-link').click(function(){
+        $(this).addClass('active'); $('#asha-link').removeClass('active');
+        $('#asha-table-wrapper').hide(); $('#rotarian-table-wrapper').show();
+    });
+
+    // PDF Export
+    $("#export-pdf").click(function(){
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF("p","pt","a4");
+        const pageWidth = doc.internal.pageSize.getWidth();
+        doc.setFontSize(18); doc.text("Rotary Santhwana Sparsham 2025", pageWidth/2,40,{align:"center"});
+        doc.setFontSize(13); doc.text("Free Mega Medical Camp - Consolidated Report", pageWidth/2,60,{align:"center"});
+
+        let activeTable = $("#asha-table-wrapper").is(":visible") ? "#asha-table" : "#rotarian-table";
+        const headers=[]; $(`${activeTable} thead th`).each(function(){ headers.push($(this).text().trim()); });
+
+        const data=[];
+        $(`${activeTable} tbody tr`).each(function(){
+            const row=[]; $(this).find("td").each(function(){ row.push($(this).text().trim()); });
+            data.push(row);
+        });
+
+        doc.autoTable({ head:[headers], body:data, startY:80, theme:'grid',
+            styles:{fontSize:9}, headStyles:{fillColor:[41,128,185],textColor:255} });
+
+        const fileName = activeTable.includes("asha") ? "ASHA_Consolidated_Report.pdf" : "Rotarian_Consolidated_Report.pdf";
+        doc.save(fileName);
+    });
+});
+</script>
+<script src="{% static 'med_admin/sidebar/sidebar.js' %}"></script>
+</body>
+</html>

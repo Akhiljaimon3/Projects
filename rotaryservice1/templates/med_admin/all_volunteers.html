@@ -1,0 +1,214 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All Volunteers - SPARSHAM 2025</title>
+
+<link href="{% static 'med_admin/sidebar/sidebar.css' %}" rel="stylesheet">
+<link href="{% static 'med_admin/ashaworker/ashaworker.css' %}" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<style>
+body {
+    background-color: #f4f6f9;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Back button */
+.back-btn {
+    background-color: var(--button-bg);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-weight: 600;
+    margin: 10px 16px;
+}
+
+/* Page heading */
+.page-heading {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--button-bg);
+    text-align: center;
+    margin: 10px 0 15px 0;
+}
+
+/* Desktop table */
+.volunteer-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.volunteer-table th, .volunteer-table td {
+    border: 1px solid #ddd;
+    padding: 10px 12px;
+    text-align: left;
+}
+
+.volunteer-table th {
+    background-color: var(--button-bg);
+    color: white;
+}
+
+.volunteer-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.volunteer-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Mobile collapsible card */
+.volunteer-card-mobile {
+    display: none;
+    background-color: #fff;
+    border-radius: 8px;
+    margin: 10px 0;
+    padding: 12px 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border-left: 4px solid var(--button-bg);
+}
+
+.volunteer-card-mobile .card-header {
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    font-weight: 600;
+    color: #013072ff;
+}
+
+.volunteer-card-mobile .card-body {
+    display: none;
+    margin-top: 10px;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+.card-body span {
+    display: block;
+    margin-bottom: 6px;
+}
+
+/* Arrow rotation */
+.card-header .arrow {
+    transition: transform 0.3s ease;
+}
+
+.card-header.active .arrow {
+    transform: rotate(90deg);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .volunteer-table {
+        display: none;
+    }
+    .volunteer-card-mobile {
+        display: block;
+    }
+}
+</style>
+</head>
+<body>
+
+{% if request.session.type == 'admin' %}
+    {% include 'med_admin/sidebar.html' %}
+{% else %}
+    {% include 'med_admin/sidebar_viewonly.html' %}
+{% endif %}
+
+<div class="main-content sidebar-visible">
+    <!-- Back Button -->
+    <button class="back-btn" onclick="history.back()">&larr; Back</button>
+
+    <h2 class="page-heading" style="color: black;">All Volunteers</h2>
+
+    <!-- Desktop Table View -->
+    <table class="volunteer-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Code</th>
+                <th>Department</th>
+                <th>Desk</th>
+                <th>Contact</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vol in page_obj %}
+            <tr>
+                <td>{{ forloop.counter0|add:start_sl|add:1 }}</td>
+                <td>{{ vol.name }}</td>
+                <td>{{ vol.code }}</td>
+                <td>{{ vol.department }}</td>
+                <td>{{ vol.desk }}</td>
+                <td>{{ vol.contact|default:"-" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align:center; color:#555;">No volunteers found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Mobile Collapsible Cards -->
+    <div class="volunteer-cards-mobile">
+        {% for vol in page_obj %}
+        <div class="volunteer-card-mobile">
+            <div class="card-header">
+                <span>{{ forloop.counter0|add:start_sl|add:1 }}. {{ vol.name }} - {{ vol.code }}</span>
+                <span class="arrow">&#9654;</span>
+            </div>
+            <div class="card-body">
+                <span><strong>Department:</strong> {{ vol.department }}</span>
+                <span><strong>Desk:</strong> {{ vol.desk }}</span>
+                {% if vol.contact %}
+                <span><strong>Contact:</strong> {{ vol.contact }}</span>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.paginator.num_pages > 1 %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" class="page-btn">&laquo; Prev</a>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <span class="page-btn current">{{ num }}</span>
+            {% else %}
+                <a href="?page={{ num }}" class="page-btn">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="page-btn">Next &raquo;</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<script src="{% static 'med_admin/sidebar/sidebar.js' %}"></script>
+<script>
+$(document).ready(function(){
+    $('.card-header').click(function(){
+        $(this).toggleClass('active');
+        $(this).next('.card-body').slideToggle();
+    });
+});
+</script>
+</body>
+</html>

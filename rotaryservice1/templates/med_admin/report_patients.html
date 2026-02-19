@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPARSHAM 2025 - Admin Dashboard</title>
+
+    <link href="{% static 'med_admin/sidebar/sidebar.css' %}" rel="stylesheet">
+    <link href="{% static 'med_admin/reports/patient.css' %}" rel="stylesheet">
+    <link href="{% static 'med_admin/reports/pagination.css' %}" rel="stylesheet">
+
+    <!-- Notyf -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+
+    <!-- Tom Select CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
+
+    <!-- jQuery (must be first for DataTables) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+
+    <!-- Tom Select JS -->
+    <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <style>
+.clear-btn {
+    background: #fff;
+    color: #054c97ff;      /* Dashboard blue color */
+    border: 2px solid #054c97ff;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.clear-btn:hover {
+    background: #054c97ff;
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 12px rgba(0,76,151,0.4);
+}
+</style>
+
+</head>
+<body>
+    {% if request.session.type == 'admin' %}
+        {% include 'med_admin/sidebar.html' %}
+    {% else %}
+        {% include 'med_admin/sidebar_viewonly.html' %}
+    {% endif %}
+    
+    <div class="main-content sidebar-visible">
+        <div class="display-area">
+           <div class="manage-users-header" style="display:flex; justify-content:space-between; align-items:center;">
+    <h2><i class="fa-solid fa-chart-column"></i> Patients Report</h2>
+    <button id="clear-filters" class="clear-btn">Clear Filters</button>
+</div>
+
+
+            <div class="filters-panel">
+                <div class="manage-users-controls">
+                    <select id="department-filter" class="control-item">
+                        <option value="">All Departments</option>
+                        {% for dept in departments %}
+                            <option value="{{ dept.id }}">{{ dept.department }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label class="control-item followup-item">
+                        Follow-up
+                        <input type="checkbox" id="followup-filter">
+                    </label>
+
+                    <label class="control-item followup-item">
+                        Spot Register
+                        <input type="checkbox" id="spot-filter">
+                    </label>
+
+                    <div class="addedby-section control-item">
+                        <label><input type="radio" name="addedby-type" value="all" checked> All</label>
+                        <label><input type="radio" name="addedby-type" value="asha"> ASHA Workers</label>
+                        <label><input type="radio" name="addedby-type" value="rotarian"> Rotarians</label>
+                    </div>
+
+                    <div class="dropdown-wrapper" id="asha-filter" style="display: none;">
+                        <input type="text" id="dropdownInput" placeholder="Select ASHA Worker">
+                        <ul id="dropdownResults" class="dropdown-results"></ul>
+                        <input type="hidden" id="category" name="addedby">
+                    </div>
+
+                    <div class="dropdown-wrapper" id="rotorian-filter" style="display: none;">
+                        <input type="text" id="rotorianInput" placeholder="Select Rotarian">
+                        <ul id="rotorianResults" class="dropdown-results"></ul>
+                        <input type="hidden" id="rotorian" name="rotorian">
+                    </div>
+
+                    <div class="export-wrapper">
+                        <select id="export-type" class="export-item control-item">
+                            <option value="pdf">PDF</option>
+                            <option value="excel">Excel</option>
+                        </select>
+                        <button id="export-btn" class="control-item export-btn">
+                            Download
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <table id="patients_table" class="patient-table">
+                <thead>
+                    <tr>
+                        <th>SL</th>
+                        <th>Name</th>
+                        <th>Contact</th>
+                        <th>Age</th>
+                        <th>Code</th>
+                        <th>PIN</th>
+                        <th>Added on</th>
+                        <th>Department</th>
+                        <th>Added By</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% include 'med_admin/report_patients_rows.html' %}
+                </tbody>
+            </table>
+            <div class="table-legend">
+                <span class="legend-square"></span>
+                <span class="legend-text">→ Confirmed Patients</span>
+            </div>
+        </div>
+    </div>
+
+    {{ ashaworkers_json|json_script:"asha-data" }}
+    {{ rotarians_json|json_script:"rotorian-data" }}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+
+    <script>
+        const NOTO_MALAYALAM_FONT_URL = "{% static 'fonts/NotoSansMalayalam-Regular.ttf' %}";
+        const PATIENT_REPORT_URL = "{% url 'patient_report' %}";
+        const LOGO_URL = "{% static '' %}";
+    </script>
+
+    <script src="{% static 'med_admin/sidebar/sidebar.js' %}"></script>
+    <script src="{% static 'med_admin/reports/patient.js' %}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script>
+$(document).ready(function() {
+    $('#clear-filters').click(function() {
+        // Reset selects
+        $('#department-filter').val('');
+        $('#export-type').val('pdf');
+
+        // Reset checkboxes
+        $('#followup-filter').prop('checked', false);
+        $('#spot-filter').prop('checked', false);
+
+        // Reset radio buttons
+        $('input[name="addedby-type"][value="all"]').prop('checked', true);
+
+        // Reset text inputs
+        $('#dropdownInput, #rotorianInput').val('');
+        $('#category, #rotorian').val('');
+
+        // Optionally hide dropdowns
+        $('#asha-filter, #rotorian-filter').hide();
+
+        // Reload page to clear any applied filters on backend
+        location.reload();
+    });
+});
+</script>
+
+</body>
+</html>

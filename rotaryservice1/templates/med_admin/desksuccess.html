@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPARSHAM 2025 - Registration Success</title>
+
+    <link href="{% static 'med_admin/sidebar/sidebar.css' %}" rel="stylesheet">
+    <link href="{% static 'med_admin/ashaworker/ashaworker.css' %}" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        /* Professional card container */
+        .success-card {
+            max-width: 480px;
+            margin: 3rem auto;
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        .success-card h2 {
+            font-size: 1.8rem;
+            color: #28a745;
+            margin-bottom: 1rem;
+        }
+
+        /* Login code highlight */
+        .login-code {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #007bff;
+            background-color: #e9f5ff;
+            border: 1px solid #007bff;
+            padding: 1rem 0;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            letter-spacing: 2px;
+        }
+
+        /* Desk heading */
+        .desk-heading {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #343a40;
+            margin-bottom: 1rem;
+        }
+
+        .success-details p {
+            margin: 0.5rem 0;
+            font-size: 1rem;
+            color: #495057;
+        }
+
+        /* Button */
+        .success-actions {
+            margin-top: 2rem;
+        }
+
+        .success-actions .submit-btn {
+            text-decoration: none;
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: #fff;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .success-actions .submit-btn:hover {
+            background: linear-gradient(135deg, #0056b3, #003f7f);
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 576px) {
+            .success-card {
+                margin: 2rem 1rem;
+                padding: 1.5rem;
+            }
+
+            .login-code {
+                font-size: 1.5rem;
+            }
+
+            .success-actions .submit-btn {
+                width: 100%;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% if request.session.type == 'admin' %}
+        {% include 'med_admin/sidebar.html' %}
+    {% else %}
+        {% include 'med_admin/sidebar_viewonly.html' %}
+    {% endif %}
+
+    <div class="main-content sidebar-visible">
+        <div class="success-card">
+            <h2>Registration Successful ✅</h2>
+
+            <!-- Highlighted login code -->
+            <div class="login-code">{{ user.code }}</div>
+
+            <!-- Desk heading -->
+            <div class="desk-heading">Added to {{ user.desk }} Desk</div>
+
+            <!-- User details -->
+            <div class="success-details">
+                <p><strong>Name:</strong> {{ user.name }}</p>
+                <p><strong>Department:</strong> {{ user.dept }}</p>
+            </div>
+
+            <!-- Button -->
+            <div class="success-actions">
+                <a href="{% url 'ashaworkers' %}" class="submit-btn">Add Another User</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.djangoMessages = [
+            {% for message in messages %}
+                { text: "{{ message|escapejs }}", tags: "{{ message.tags }}" },
+            {% endfor %}
+        ];
+    </script>
+
+    <script src="{% static 'med_admin/sidebar/sidebar.js' %}"></script>
+</body>
+</html>

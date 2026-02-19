@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPARSHAM 2025 - Admin Dashboard</title>
+
+    <link href="{% static 'med_admin/sidebar/sidebar.css' %}" rel="stylesheet">
+    <link href="{% static 'med_admin/ashaworker/ashaworker.css' %}" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        /* --- Input Sections --- */
+        .code-box { text-align:center; margin:10px 0 20px; }
+        .code-label { font-size:14px; font-weight:600; color:#003865; margin-bottom:6px; display:block; }
+        .digit-input { width:40px; height:44px; font-size:24px; text-align:center; margin:0 1px; border:1.5px solid #ccd6e0; border-radius:6px; transition:all 0.3s ease; }
+        .digit-input:focus { border-color:#003865; outline:none; box-shadow:0 0 6px rgba(0,56,101,0.25); }
+        .go-btn-container { display:flex; justify-content:center; align-items:center; margin-top:15px; }
+        .button_save { width:50%; padding:14px; background:#f7a81b; color:#003865; border:none; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer; transition:all 0.3s ease; box-shadow:0 2px 4px rgba(0,0,0,0.1); }
+        .button_save:hover:not(:disabled) { background:#ffbb33; transform:translateY(-2px); }
+        .button_save:disabled { background:#dcdcdc; color:#7a7a7a; cursor:not-allowed; box-shadow:none; transform:none; opacity:0.8; }
+        .form-heading { text-align:center; margin-bottom:20px; color:#003865; }
+
+        /* --- Patient Card --- */
+        .patient-card { width:100%; background:#fff; border-radius:12px; box-shadow:0 3px 12px rgba(0,0,0,0.08); padding:20px 25px; box-sizing:border-box; max-width:700px; margin:20px auto; font-family:"Segoe UI", Tahoma, Geneva, Verdana, sans-serif; text-align:left; }
+        .card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+        .back-icon, .edit-icon, .delete-icon { cursor:pointer; font-size:18px; transition: transform 0.2s ease, color 0.2s ease; }
+        .back-icon { color:#f7a81b; } .back-icon:hover { color:#003865; transform:scale(1.2); }
+        .edit-icon { color:#003865; } .edit-icon:hover { transform:scale(1.2); }
+        .delete-icon { color:#e74c3c; } .delete-icon:hover { transform:scale(1.2); }
+        .right-icons { display:flex; gap:12px; }
+        .card-body h3 { color:#003865; font-size:24px; text-align:center; margin:10px 0 15px; word-break:break-word; }
+        .card-body p { font-size:16px; color:#444; margin:6px 0; }
+        .card-body .info-row { display:flex; justify-content:space-between; margin:5px 0; flex-wrap:nowrap; }
+        .card-body .info-row p { margin:0; word-break:break-word; }
+        .checkbox-container { display:flex; align-items:center; justify-content:flex-start; margin:10px auto 0; font-size:14px; width:100%; }
+        .checkbox-container input { width:auto; margin-right:6px; }
+        /* Smooth hide/show for age input */
+.age-transition {
+  transition: opacity 0.4s ease, max-height 0.4s ease;
+  opacity: 1;
+  max-height: 60px;
+  overflow: hidden;
+  display: block;
+}
+
+.age-transition.hidden {
+  opacity: 0;
+  max-height: 0;
+  padding: 0;
+  margin: 0;
+}
+
+
+    </style>
+</head>
+<body>
+    {% if request.session.type == 'admin' %}
+        {% include 'med_admin/sidebar.html' %}
+    {% else %}
+        {% include 'med_admin/sidebar_viewonly.html' %}
+    {% endif %}
+    
+    <div class="main-content sidebar-visible">
+        <div class="display-box">
+            <div class="form-box">
+                <form id="add-user-form" method="post">
+                    {% csrf_token %}
+                    <h2 class="form-heading">Manage Patient</h2>
+
+                    <div id="input-section">
+                        <div class="code-box">
+                            <span class="code-label">Enter Registration Number</span>
+                            <input type="text" maxlength="1" class="digit-input reg-input">
+                            <input type="text" maxlength="1" class="digit-input reg-input">
+                            <input type="text" maxlength="1" class="digit-input reg-input">
+                            <input type="text" maxlength="1" class="digit-input reg-input">
+                        </div>
+
+                        <div class="code-box">
+                            <span class="code-label">Enter 3-Digit PIN</span>
+                            <input type="text" maxlength="1" class="digit-input pin-input">
+                            <input type="text" maxlength="1" class="digit-input pin-input">
+                            <input type="text" maxlength="1" class="digit-input pin-input">
+                        </div>
+
+                        <input type="hidden" name="code" id="hiddenRegCode">
+                        <input type="hidden" name="pin" id="hiddenPinCode">
+
+                        <div class="go-btn-container">
+                            <button type="submit" class="button_save" id="goBtn" disabled>GO</button>
+                        </div>
+                    </div>
+                </form>
+                <div id="patient-section" style="display:none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const regInputs = document.querySelectorAll('.reg-input');
+        const pinInputs = document.querySelectorAll('.pin-input');
+        const goBtn = document.getElementById('goBtn');
+        const hiddenReg = document.getElementById('hiddenRegCode');
+        const hiddenPin = document.getElementById('hiddenPinCode');
+        const form = document.getElementById('add-user-form');
+        const inputSection = document.getElementById('input-section');
+        const patientSection = document.getElementById('patient-section');
+        const notyf = new Notyf({ duration: 2500, position: { x: 'right', y: 'bottom' } });
+
+        function setupInputs(inputs, hiddenField, nextStart=null){
+            inputs.forEach((input,index)=>{
+                input.addEventListener('input',()=>{
+                    input.value = input.value.replace(/[^0-9]/g,'');
+                    if(input.value && index < inputs.length-1) inputs[index+1].focus();
+                    else if(input.value && nextStart) nextStart.focus();
+                    hiddenField.value = Array.from(inputs).map(i=>i.value).join('');
+                    toggleButton();
+                });
+                input.addEventListener('keydown', e=>{
+                    if(e.key==="Backspace" && !input.value && index>0) inputs[index-1].focus();
+                });
+            });
+        }
+
+        function toggleButton(){ goBtn.disabled = hiddenReg.value.length!==4 || hiddenPin.value.length!==3; }
+
+        setupInputs(regInputs, hiddenReg, pinInputs[0]);
+        setupInputs(pinInputs, hiddenPin);
+
+        function renderPatientCard(p){
+            patientSection.innerHTML = `
+                <div class="patient-card">
+                    <div class="card-header">
+                        <i id="backBtn" class="fas fa-arrow-left back-icon" title="Back"></i>
+                        <div class="right-icons">
+                            <i class="fas fa-pencil-alt edit-icon" title="Edit"></i>
+                            <i class="fas fa-trash-alt delete-icon" title="Delete"></i>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h3>${p.name}</h3>
+                        <div class="info-row">
+                            <p><strong>Reg No:</strong> ${p.code}</p>
+                            <p><strong>Reg No:</strong> ${p.pin}</p>
+                        </div>
+                        <div class="info-row">
+                            <p><strong>Age:</strong> ${p.age || '-'}</p>
+                            <p><strong>Gender:</strong> ${p.gender || '-'}</p>
+                        </div>
+                        <p><strong>Department:</strong> ${p.dept}</p>
+                    </div>
+                </div>
+            `;
+            const backBtn = document.getElementById('backBtn');
+            if(backBtn) backBtn.addEventListener('click',()=>{
+                patientSection.style.display='none';
+                inputSection.style.display='block';
+                form.reset();
+                hiddenReg.value=''; hiddenPin.value=''; goBtn.disabled=true;
+            });
+
+            const editBtn = patientSection.querySelector('.edit-icon');
+            if(editBtn) editBtn.addEventListener('click',()=>renderEditForm(p));
+
+            const deleteBtn = patientSection.querySelector('.delete-icon');
+            if (deleteBtn) {
+        deleteBtn.addEventListener('click', () => {
+            if (!confirm('Are you sure you want to delete this patient?')) return;
+
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'deletepatient' %}", // Django view URL
+                data: {
+                    patientId: p.id,
+                    csrfmiddlewaretoken: "{{ csrf_token }}"
+                },
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                success: function (response) {
+                    if (response.status === 'success') {
+                        notyf.success('Patient deleted successfully');
+                        // Go back to the input section
+                        patientSection.style.display = 'none';
+                        inputSection.style.display = 'block';
+                        form.reset();
+                        hiddenReg.value = '';
+                        hiddenPin.value = '';
+                        goBtn.disabled = true;
+                    } else {
+                        notyf.error(response.message || 'Failed to delete patient');
+                    }
+                },
+                error: function () {
+                    notyf.error('Something went wrong. Please try again.');
+                }
+            });
+        });
+    }
+        }
+
+        function renderEditForm(p){
+        const patientDept = parseInt(p.department);
+        console.log(patientDept)
+        patientSection.innerHTML = `
+            <form action="{% url 'editpatient' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="patientId" value="${p.id}">
+                
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" name="name" value="${p.name}" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Contact</label>
+                    <input type="text" name="contact" value="${p.contact}" maxlength="10" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Age</label>
+                    <input type="number" name="age" value="${p.age!=='-'?p.age:''}" min="0" max="99" required>
+                </div>
+
+                <div class="checkbox-container">
+                    <input type="checkbox" name="ageBelow1" ${p.age==='0'?'checked':''}>
+                    <label>Tick if patient is below 1 year old</label>
+                </div>
+
+                <div class="form-group">
+                    <label>Gender</label>
+                    <select name="gender" required>
+                        <option value="" disabled>Select Gender</option>
+                        <option value="Male" ${p.gender==='Male'?'selected':''}>Male</option>
+                        <option value="Female" ${p.gender==='Female'?'selected':''}>Female</option>
+                        <option value="Other" ${p.gender==='Other'?'selected':''}>Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Department</label>
+                    <select name="department" required>
+                        ${departments.map(dept => `
+                            <option value="${dept.id}" ${dept.id === patientDept ? 'selected' : ''}>
+                                ${dept.department}
+                            </option>
+                        `).join('')}
+                    </select>
+                </div>
+
+
+                <div class="go-btn-container">
+                    <button type="button" class="button_save" id="cancelEditBtn" style="margin-right: 10px;">Cancel</button>
+                    <button type="submit" class="button_save" id="saveEditBtn">Save</button>
+                </div>
+
+            </form>
+        `;
+         const editForm = patientSection.querySelector('form');
+    const nameInput = editForm.querySelector('[name="name"]');
+    const contactInput = editForm.querySelector('[name="contact"]');
+    const ageInput = editForm.querySelector('[name="age"]');
+    const genderSelect = editForm.querySelector('[name="gender"]');
+    const departmentSelect = editForm.querySelector('[name="department"]');
+    const ageBelow1Checkbox = editForm.querySelector('[name="ageBelow1"]');
+    const saveBtn = editForm.querySelector('#saveEditBtn');
+
+    // Cancel button
+    const cancelBtn = document.getElementById('cancelEditBtn');
+    if(cancelBtn){
+        cancelBtn.addEventListener('click', ()=>{ renderPatientCard(p); });
+    }
+
+    // Age checkbox logic
+    if (ageBelow1Checkbox && ageInput) {
+        ageInput.classList.add('age-transition');
+        if (ageBelow1Checkbox.checked) {
+            ageInput.classList.add('hidden');
+            ageInput.removeAttribute('required');
+        }
+        ageBelow1Checkbox.addEventListener('change', () => {
+            if (ageBelow1Checkbox.checked) {
+                ageInput.classList.add('hidden');
+                ageInput.removeAttribute('required');
+                setTimeout(() => { ageInput.value = ''; }, 400);
+            } else {
+                ageInput.classList.remove('hidden');
+                ageInput.setAttribute('required', 'required');
+            }
+            saveBtn.disabled = !validateEditForm();
+        });
+    }
+
+    // Validation function
+    function validateEditForm(){
+        const nameValid = /^[A-Za-z\s]+$/.test(nameInput.value.trim());
+        const contactValid = /^[6-9][0-9]{9}$/.test(contactInput.value.trim());
+        const ageValid = ageBelow1Checkbox.checked || /^[1-9][0-9]?$/.test(ageInput.value.trim());
+        const genderValid = genderSelect.value !== '';
+        const deptValid = departmentSelect.value !== '';
+        return nameValid && contactValid && ageValid && genderValid && deptValid;
+    }
+
+    // Real-time validation
+    [nameInput, contactInput, ageInput, genderSelect, departmentSelect].forEach(el=>{
+        el.addEventListener('input', ()=>{ saveBtn.disabled = !validateEditForm(); });
+    });
+    saveBtn.disabled = !validateEditForm();
+
+    // Save button click
+    saveBtn.addEventListener('click', (e) => {
+        if(!validateEditForm()){
+            e.preventDefault();
+            notyf.error("Please fill all fields correctly before saving.");
+            return false;
+        }
+        const confirmSave = confirm('Are you sure you want to save changes?');
+        if(!confirmSave) e.preventDefault();
+    });
+}
+
+form.addEventListener('submit',function(e){
+    e.preventDefault();
+    goBtn.disabled=true;
+    goBtn.textContent="Loading...";
+    $.ajax({
+        type:'POST',
+        url:"{% url 'managepatient' %}",
+        data:{code:hiddenReg.value,pin:hiddenPin.value,csrfmiddlewaretoken:"{{ csrf_token }}"},
+        headers:{'X-Requested-With':'XMLHttpRequest'},
+        success:function(response){
+            goBtn.disabled=false;
+            goBtn.textContent="GO";
+            if(response.status==='success'){
+                inputSection.style.display='none';
+                patientSection.style.display='block';
+                renderPatientCard(response.patient);
+                notyf.success('Patient loaded successfully');
+            } else notyf.error(response.message||'Patient not found');
+        },
+        error:function(){
+            goBtn.disabled=false;
+            goBtn.textContent="GO";
+            notyf.error("Something went wrong. Please try again.");
+        }
+    });
+});
+    </script>
+
+    <script>
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                notyf.success("{{ message|escapejs }}");
+            {% elif message.tags == 'error' %}
+                notyf.error("{{ message|escapejs }}");
+            {% else %}
+                notyf.open({ type: 'info', message: "{{ message|escapejs }}" });
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+</script>
+
+{{ departments|json_script:"departments_data" }}
+<script>
+    const departments = JSON.parse(document.getElementById('departments_data').textContent);
+</script>
+
+
+    <script src="{% static 'med_admin/sidebar/sidebar.js' %}"></script>
+    <script src="{% static 'med_admin/ashaworker/ashaworker.js' %}"></script>
+</body>
+</html>

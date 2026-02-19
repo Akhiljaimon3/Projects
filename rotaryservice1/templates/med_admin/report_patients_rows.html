@@ -1,0 +1,13 @@
+{% for patient in patients %}
+<tr {% if patient.confirm_entry == 1 %}style="background-color: #d4edda"{% endif %}>
+    <td>{{ forloop.counter }}</td>
+    <td>{{ patient.name }}</td>
+    <td>{{ patient.contact }}</td>
+    <td>{{ patient.age|default_if_none:"" }}</td>
+    <td>{{ patient.code }}</td>
+    <td>{{ patient.securitypin }}</td>
+    <td>{{ patient.added_on|date:"d M Y, h.i A" }}</td>
+    <td>{{ patient.department_name }}</td>
+    <td>{{ patient.added_by_name }}</td>
+</tr>
+{% endfor %}

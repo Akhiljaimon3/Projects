@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPARSHAM 2025 - Admin Dashboard</title>
+
+    <!-- CSS -->
+    <link href="{% static 'med_admin/sidebar/sidebar.css' %}" rel="stylesheet">
+    <link href="{% static 'med_admin/reports/patient.css' %}" rel="stylesheet">
+    <link href="{% static 'med_admin/reports/pagination.css' %}" rel="stylesheet">
+
+    <!-- Local CSS libraries -->
+    <link rel="stylesheet" href="{% static 'fonts/notyf.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/jquery.dataTables.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/tom-select.css' %}">
+
+    <!-- CSRF -->
+    <meta name="csrf-token" content="{{ csrf_token }}">
+</head>
+<body>
+    {% if request.session.type == 'admin' %}
+        {% include 'med_admin/sidebar.html' %}
+    {% else %}
+        {% include 'med_admin/sidebar_viewonly.html' %}
+    {% endif %}
+    
+    <div class="main-content sidebar-visible">
+        <div class="display-area">
+            <div class="manage-users-header">
+                <h2><i class="fa-solid fa-chart-column"></i> Spot Register Report</h2>
+
+                <div class="manage-users-controls">
+                    <button id="clear-filters" class="clear-btn">Clear Filters</button>
+  
+                    <select id="department-filter" class="control-item">
+                        <option value="">All Departments</option>
+                        {% for dept in departments %}
+                            <option value="{{ dept.id }}">{{ dept.department }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label class="control-item followup-item">
+                        Follow-up
+                        <input type="checkbox" id="followup-filter">
+                    </label>
+
+                    <div class="dropdown-wrapper" id="addby-filter">
+                        <input type="text" id="dropdownInput" placeholder="Confirmed By" required>
+                        <ul id="dropdownResults" class="dropdown-results"></ul>
+                        <input type="hidden" id="category" name="confirmby">
+                    </div>
+
+                    <div class="export-wrapper">
+                        <select id="export-type" class="export-item control-item">
+                            <option value="pdf">PDF</option>
+                            <option value="excel">Excel</option>
+                        </select>
+                        <button id="export-btn" class="control-item export-btn">
+                            Download
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <table id="patients_table" class="token-table">
+                <thead>
+                    <tr>
+                        <th>SL</th>
+                        <th>Name</th>
+                        <th>Contact</th>
+                        <th>Age</th>
+                        <th>Code</th>
+                        <th>PIN</th>
+                        <th>Token</th>
+                        <th>Added on</th>
+                        <th>Department</th>
+                        <th>Added By</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% include 'med_admin/report_spotregister_rows.html' %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {{ officialusers_json|json_script:"reg-data" }}
+    {{ rotarians_json|json_script:"rotorian-data" }}
+
+    <!-- Local JS libraries -->
+    <script src="{% static 'fonts/jquery-3.7.1.min.js' %}"></script>
+    <script src="{% static 'fonts/notyf.min.js' %}"></script>
+    <script src="{% static 'fonts/tom-select.complete.min.js' %}"></script>
+    <script src="{% static 'fonts/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'fonts/jspdf.umd.min.js' %}"></script>
+    <script src="{% static 'fonts/jspdf.plugin.autotable.min.js' %}"></script>
+    <script src="{% static 'fonts/exceljs.min.js' %}"></script>
+
+    <script>
+        const NOTO_MALAYALAM_FONT_URL = "{% static 'fonts/NotoSansMalayalam-Regular.ttf' %}";
+        const TOKEN_REPORT_URL = "{% url 'spotregister_report' %}";
+        const LOGO_URL = "{% static '' %}";
+    </script>
+
+    <script src="{% static 'med_admin/sidebar/sidebar.js' %}"></script>
+    <script src="{% static 'med_admin/reports/spot.js' %}"></script>
+    <button id="clear-filters" class="clear-btn">Clear Filters</button>
+    <style>
+.clear-btn {
+    background: #fff;
+    color: #054c97ff;      /* Dashboard blue color */
+    border: 2px solid #054c97ff;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.clear-btn:hover {
+    background: #054c97ff;
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 12px rgba(0,76,151,0.4);
+}
+</style>
+<script>
+$(document).ready(function() {
+    $('#clear-filters').click(function() {
+        // Reset selects
+        $('#department-filter').val('');
+        $('#export-type').val('pdf');
+
+        // Reset checkboxes
+        $('#followup-filter').prop('checked', false);
+        $('#spot-filter').prop('checked', false);
+
+        // Reset radio buttons
+        $('input[name="addedby-type"][value="all"]').prop('checked', true);
+
+        // Reset text inputs
+        $('#dropdownInput, #rotorianInput').val('');
+        $('#category, #rotorian').val('');
+
+        // Optionally hide dropdowns
+        $('#asha-filter, #rotorian-filter').hide();
+
+        // Reload page to clear any applied filters on backend
+        location.reload();
+    });
+});
+</script>
+</body>
+
+</html>
